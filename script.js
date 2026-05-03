@@ -13,7 +13,7 @@ function switchHero(thumb, src) {
 }
 
 // Auto-rotate hero photos
-const photos = ['aryan 1.jpeg','aryan 2.jpeg','aryan3.jpeg','aryan4.jpeg','aryan5.jpeg'];
+const photos = ['aryan 1.jpeg.jpeg','aryan 2.jpeg.jfif','aryan3.jpeg.jpeg','aryan4.jpeg.jpeg','aryan5.jpeg.jpeg'];
 let idx = 0;
 setInterval(() => {
   idx = (idx + 1) % photos.length;
