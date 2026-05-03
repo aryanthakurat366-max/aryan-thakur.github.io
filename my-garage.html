@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEGENDS — Top 10 Cars & Bikes of All Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a08;
+    --surface: #111110;
+    --border: #222220;
+    --gold: #c9a84c;
+    --gold-dim: #7a6330;
+    --white: #f0ede6;
+    --muted: #6b6b62;
+    --card-bg: #13130f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.5;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.35;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 5vw 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: 'SPEED';
+    position: absolute;
+    right: -2rem; top: -1.5rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(6rem, 18vw, 18rem);
+    color: rgba(201,168,76,0.04);
+    pointer-events: none;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .header-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+  header h1 span { color: var(--gold); }
+  .header-right {
+    text-align: right;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    line-height: 2;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 5vw;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,8,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 50;
+  }
+  .tab {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+    padding: 1.2rem 2rem 1.1rem;
+    cursor: none;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--white); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  main { padding: 3rem 5vw 6rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-intro {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .section-intro .line {
+    height: 1px; flex: 1;
+    background: linear-gradient(90deg, var(--gold-dim), transparent);
+  }
+  .section-intro p {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 1.5px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s, background 0.3s;
+    animation: fadeUp 0.5s both;
+  }
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.2s; }
+  .card:nth-child(5) { animation-delay: 0.25s; }
+  .card:nth-child(6) { animation-delay: 0.3s; }
+  .card:nth-child(7) { animation-delay: 0.35s; }
+  .card:nth-child(8) { animation-delay: 0.4s; }
+  .card:nth-child(9) { animation-delay: 0.45s; }
+  .card:nth-child(10) { animation-delay: 0.5s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:hover { border-color: var(--gold-dim); background: #161610; }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .card:hover::before { opacity: 1; }
+
+  .img-zone {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background: #0d0d0b;
+  }
+  .img-zone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: saturate(0.75) brightness(0.85);
+  }
+  .card:hover .img-zone img {
+    transform: scale(1.07);
+    filter: saturate(1.1) brightness(0.95);
+  }
+  .img-zone::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(to top, var(--card-bg), transparent);
+    pointer-events: none;
+  }
+
+  .rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    line-height: 1;
+    color: rgba(201,168,76,0.85);
+    position: absolute;
+    top: 0.6rem; right: 1.2rem;
+    letter-spacing: -0.03em;
+    transition: color 0.3s;
+    z-index: 2;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+  }
+  .card:hover .rank { color: rgba(201,168,76,1); }
+
+  .card-body { padding: 1.5rem 2rem 2rem; }
+
+  .card-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.03em;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .card .year {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+  }
+  .card p.desc {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #8a8a7a;
+    font-weight: 300;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat { flex: 1; }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<header>
+  <div>
+    <p class="header-label">The Definitive List</p>
+    <h1>THE<br><span>LEGENDS</span></h1>
+  </div>
+  <div class="header-right">
+    <p>Top 10 Cars</p>
+    <p>&amp; Bikes</p>
+    <p>of All Time</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" onclick="switchTab('cars', this)">🏎️ Cars</div>
+  <div class="tab" onclick="switchTab('bikes', this)">🏍️ Bikes</div>
+</nav>
+
+<main>
+
+  <!-- ===== CARS ===== -->
+  <section class="section active" id="cars">
+    <div class="section-intro">
+      <div class="line"></div>
+      <p>Greatest automobiles ever built</p>
+      <div class="line" style="background:linear-gradient(270deg,var(--gold-dim),transparent)"></div>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/ferrari 250 gto.jpg" alt="Ferrari 250 GTO">
+        </div>
+        <span class="rank">01</span>
+        <div class="card-body">
+          <p class="card-tag">Italian Icon</p>
+          <h3>Ferrari 250 GTO</h3>
+          <p class="year">1962 – 1964</p>
+          <p class="desc">Widely regarded as the greatest Ferrari ever made and possibly the most coveted car on earth. The 250 GTO won the GT World Championship three years straight and remains a symbol of raw, unfiltered mechanical beauty.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">280 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">3.0L V12</span></div>
+            <div class="stat"><span class="stat-label">Units Built</span><span class="stat-value">36</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/Porsche 911 GT1.jpg" alt="Porsche 911 GT1">
+        </div>
+        <span class="rank">02</span>
+        <div class="card-body">
+          <p class="card-tag">German Precision</p>
+          <h3>Porsche 911 GT1</h3>
+          <p class="year">1996 – 1998</p>
+          <p class="desc">Built to satisfy Le Mans homologation rules, the 911 GT1 is a road-legal race car that won the 24 Hours of Le Mans in 1998. A mid-engined marvel that blurred the line between racetrack and street.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">320 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">3.2L Twin-Turbo</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">544 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/McLaren f1.jpg" alt="McLaren F1">
+        </div>
+        <span class="rank">03</span>
+        <div class="card-body">
+          <p class="card-tag">British Royalty</p>
+          <h3>McLaren F1</h3>
+          <p class="year">1992 – 1998</p>
+          <p class="desc">Gordon Murray's masterpiece. The McLaren F1 held the title of world's fastest production car for 12 years. Its central driving position, gold-lined engine bay, and BMW V12 made it pure automotive poetry.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">391 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">6.1L V12</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">627 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/ford gt40.jpg" alt="Ford GT40">
+        </div>
+        <span class="rank">04</span>
+        <div class="card-body">
+          <p class="card-tag">American Muscle</p>
+          <h3>Ford GT40</h3>
+          <p class="year">1964 – 1969</p>
+          <p class="desc">Ford built it specifically to beat Ferrari at Le Mans — and did exactly that four times in a row. The GT40's triumph at the 1966 Le Mans with a 1-2-3 finish is the greatest underdog story in motorsport history.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">335 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">7.0L V8</span></div>
+            <div class="stat"><span class="stat-label">Le Mans Wins</span><span class="stat-value">4</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/nissian gt-r r34.jpg" alt="Nissan GT-R R34">
+        </div>
+        <span class="rank">05</span>
+        <div class="card-body">
+          <p class="card-tag">Japanese Thunder</p>
+          <h3>Nissan GT-R R34</h3>
+          <p class="year">1999 – 2002</p>
+          <p class="desc">Godzilla. The Skyline GT-R's legendary RB26DETT engine and ATTESA all-wheel drive system made it the benchmark performance car of its era. Still considered one of the greatest driver's cars ever made, full stop.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">300 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">2.6L Twin-Turbo</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">276+ hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/koenigsegg agera rs.jpg" alt="Koenigsegg Agera RS">
+        </div>
+        <span class="rank">06</span>
+        <div class="card-body">
+          <p class="card-tag">Swedish Viking</p>
+          <h3>Koenigsegg Agera RS</h3>
+          <p class="year">2015 – 2018</p>
+          <p class="desc">A one-megawatt hypercar that smashed multiple world records in 2017, reaching 447.19 km/h on a closed Nevada highway. The Agera RS represents the absolute pinnacle of what a road car can be.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">447 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">5.0L Twin-Turbo V8</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">1,341 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/lamborghini miura.jpg" alt="Lamborghini Miura">
+        </div>
+        <span class="rank">07</span>
+        <div class="card-body">
+          <p class="card-tag">Italian Fury</p>
+          <h3>Lamborghini Miura</h3>
+          <p class="year">1966 – 1973</p>
+          <p class="desc">The car that invented the supercar. The Miura's transverse mid-engine layout became the template for every high-performance machine that followed. Its styling by Bertone is still breathtaking 60 years on.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">280 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">3.9L V12</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">385 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/aston martin dbR1.jpg" alt="Aston Martin DBR1">
+        </div>
+        <span class="rank">08</span>
+        <div class="card-body">
+          <p class="card-tag">British Perfection</p>
+          <h3>Aston Martin DBR1</h3>
+          <p class="year">1956 – 1959</p>
+          <p class="desc">The DBR1 won the 1959 World Sportscar Championship and the 24 Hours of Le Mans, establishing Aston Martin's motorsport legacy. Pure, elegant, and devastatingly fast for its era — a British thoroughbred.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">260 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">2.9L Straight-6</span></div>
+            <div class="stat"><span class="stat-label">Le Mans Win</span><span class="stat-value">1959</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/mercedes-benz 300 sl  gullwing.jpg" alt="Mercedes 300 SL Gullwing">
+        </div>
+        <span class="rank">09</span>
+        <div class="card-body">
+          <p class="card-tag">German Perfection</p>
+          <h3>Mercedes 300 SL Gullwing</h3>
+          <p class="year">1954 – 1957</p>
+          <p class="desc">The first production car with fuel injection and the most iconic gullwing doors in history. The 300 SL was the fastest production car of its era and is still one of the most beautiful machines ever designed.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">260 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">3.0L Inline-6</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">215 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset/bugatti veyron 16.4.jpg" alt="Bugatti Veyron 16.4">
+        </div>
+        <span class="rank">10</span>
+        <div class="card-body">
+          <p class="card-tag">Bugatti Legend</p>
+          <h3>Bugatti Veyron 16.4</h3>
+          <p class="year">2005 – 2015</p>
+          <p class="desc">When it launched, the Veyron was a technical impossibility made real. An 8.0L W16 quad-turbocharged engine, 10 radiators, 1,001 horsepower — it redefined what engineering could achieve and changed hypercars forever.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">408 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">8.0L W16</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">1,001 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== BIKES ===== -->
+  <section class="section" id="bikes">
+    <div class="section-intro">
+      <div class="line"></div>
+      <p>Greatest motorcycles ever built</p>
+      <div class="line" style="background:linear-gradient(270deg,var(--gold-dim),transparent)"></div>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/honda cb750.jpg" alt="Honda CB750">
+        </div>
+        <span class="rank">01</span>
+        <div class="card-body">
+          <p class="card-tag">Japanese Masterpiece</p>
+          <h3>Honda CB750</h3>
+          <p class="year">1969 – 2003</p>
+          <p class="desc">The bike that invented the modern motorcycle. The CB750 introduced an inline-four engine, disc brakes, and electric start to the masses — changing motorcycling overnight. Every superbike owes a debt to this machine.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">200 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">736cc Inline-4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">67 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/dugati 916.jpg" alt="Ducati 916">
+        </div>
+        <span class="rank">02</span>
+        <div class="card-body">
+          <p class="card-tag">Ducati DNA</p>
+          <h3>Ducati 916</h3>
+          <p class="year">1994 – 1998</p>
+          <p class="desc">Massimo Tamburini's design masterpiece. The 916 is the most beautiful motorcycle ever made — full stop. It won 4 consecutive Superbike World Championships and set the template for sport bikes that followed.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">270 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">916cc L-Twin</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">114 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/harley-davidson knucklehead.jpg" alt="Harley-Davidson Knucklehead">
+        </div>
+        <span class="rank">03</span>
+        <div class="card-body">
+          <p class="card-tag">American Legend</p>
+          <h3>Harley-Davidson Knucklehead</h3>
+          <p class="year">1936 – 1947</p>
+          <p class="desc">The Knucklehead didn't just start Harley-Davidson's modern era — it birthed an entire American culture. Its overhead-valve engine was revolutionary, and its style created a motorcycle archetype that persists to this day.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">160 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">1,000cc OHV V-Twin</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">40 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/kawasaki ninja h24.jpg" alt="Kawasaki Ninja H2R">
+        </div>
+        <span class="rank">04</span>
+        <div class="card-body">
+          <p class="card-tag">Speed Record</p>
+          <h3>Kawasaki Ninja H2R</h3>
+          <p class="year">2015 – Present</p>
+          <p class="desc">The most powerful production motorcycle ever made. The H2R's supercharged inline-four is an engineering marvel straight from Kawasaki's aerospace division. It produces enough power to break physics on a racetrack.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">400+ km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">998cc Supercharged I4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">310 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/yamaha  yzf-r1.jpg" alt="Yamaha YZF-R1">
+        </div>
+        <span class="rank">05</span>
+        <div class="card-body">
+          <p class="card-tag">MotoGP Soul</p>
+          <h3>Yamaha YZF-R1</h3>
+          <p class="year">1998 – Present</p>
+          <p class="desc">The bike that redefined what a litre-class sportbike could be. The first-gen R1's compact chassis and punchy crossplane engine made it an instant classic. In M specification, it's the closest thing to a MotoGP bike for the road.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">299 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">998cc Crossplane I4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">200 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/vincent black shadow.jpg" alt="Vincent Black Shadow">
+        </div>
+        <span class="rank">06</span>
+        <div class="card-body">
+          <p class="card-tag">British Steel</p>
+          <h3>Vincent Black Shadow</h3>
+          <p class="year">1948 – 1955</p>
+          <p class="desc">For almost a decade the Black Shadow was the fastest production vehicle on earth — car or bike. Handcrafted by Vincent in England, it was so far ahead of its time that it made everything else look primitive.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">241 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">998cc V-Twin</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">55 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/honda rc30.jpg" alt="Honda RC30">
+        </div>
+        <span class="rank">07</span>
+        <div class="card-body">
+          <p class="card-tag">Honda Engineering</p>
+          <h3>Honda RC30</h3>
+          <p class="year">1987 – 1992</p>
+          <p class="desc">Officially the VFR750R, the RC30 was Honda's gift to endurance racing — and to motorcycling itself. It won the World Superbike Championship in its first year and is still regarded as one of Honda's finest achievements.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">260 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">748cc V4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">118 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/suzuki gsx r750.jpg" alt="Suzuki GSX-R750">
+        </div>
+        <span class="rank">08</span>
+        <div class="card-body">
+          <p class="card-tag">Suzuki Shock</p>
+          <h3>Suzuki GSX-R750</h3>
+          <p class="year">1985 – Present</p>
+          <p class="desc">The original GSX-R750 launched in 1985 and rewrote the sportbike rulebook entirely. Lightweight, purpose-built, race-ready straight from the factory — it was the first true superbike for the road and inspired everything after.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">260 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">750cc Inline-4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">150 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/triumph-bonneville.jpg" alt="Triumph Bonneville T120">
+        </div>
+        <span class="rank">09</span>
+        <div class="card-body">
+          <p class="card-tag">Triumph of Britain</p>
+          <h3>Triumph Bonneville T120</h3>
+          <p class="year">1959 – Present</p>
+          <p class="desc">Named after the Bonneville Salt Flats where Triumph set land speed records, the T120 is motorcycling's most enduring icon. Steve McQueen rode one. It shaped café racer culture and still turns heads six decades on.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">185 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">1,200cc Parallel Twin</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">80 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="img-zone">
+          <img src="asset-bike/kawasaki-z1-900.jpg" alt="Kawasaki Z1 900">
+        </div>
+        <span class="rank">10</span>
+        <div class="card-body">
+          <p class="card-tag">Kawasaki Legend</p>
+          <h3>Kawasaki Z1 900</h3>
+          <p class="year">1972 – 1976</p>
+          <p class="desc">When Honda launched the CB750, Kawasaki went back to the drawing board and created something even wilder. The Z1 was faster, bigger, and louder than anything on the road. It launched the superbike wars of the 1970s.</p>
+          <div class="stat-row">
+            <div class="stat"><span class="stat-label">Top Speed</span><span class="stat-value">209 km/h</span></div>
+            <div class="stat"><span class="stat-label">Engine</span><span class="stat-value">903cc DOHC Inline-4</span></div>
+            <div class="stat"><span class="stat-label">Power</span><span class="stat-value">82 hp</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© Legends of Speed &nbsp;·&nbsp; The Definitive List &nbsp;·&nbsp; All Time Greats</p>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = (mx - 5) + 'px';
+    cursor.style.top = (my - 5) + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx - 18) * 0.15;
+    ry += (my - ry - 18) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  function switchTab(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    const cards = document.querySelectorAll('#'+id+' .card');
+    cards.forEach(c => {
+      c.style.animation = 'none';
+      c.offsetHeight;
+      c.style.animation = '';
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Currency Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --bg:#0e0e12; --card:#16161e; --border:#2a2a36;
+      --accent:#d4a853; --accent2:#e8c884;
+      --text:#f0ede6; --muted:#7a7a8c;
+      --input-bg:#1e1e2a; --green:#4ecb8d;
+      --shadow:0 24px 64px rgba(0,0,0,0.55);
+      --red:#e8745a;
+    }
+
+    body{
+      min-height:100vh; background:var(--bg);
+      display:flex; align-items:flex-start; justify-content:center;
+      font-family:'DM Sans',sans-serif; color:var(--text);
+      padding:48px 16px; position:relative; overflow-x:hidden;
+    }
+    body::before{
+      content:''; position:fixed; width:520px; height:520px;
+      background:radial-gradient(circle,rgba(212,168,83,.13) 0%,transparent 70%);
+      top:-120px; right:-100px; border-radius:50%; pointer-events:none;
+    }
+    body::after{
+      content:''; position:fixed; width:400px; height:400px;
+      background:radial-gradient(circle,rgba(78,203,141,.07) 0%,transparent 70%);
+      bottom:-80px; left:-80px; border-radius:50%; pointer-events:none;
+    }
+
+    /* ── CARD ── */
+    .card{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:26px; padding:50px 38px 40px;
+      width:480px; max-width:100%;
+      box-shadow:var(--shadow); position:relative;
+      animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+    .badge{
+      position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#1a1200; font-size:11px; font-weight:600;
+      letter-spacing:1.8px; text-transform:uppercase;
+      padding:5px 22px; border-radius:20px; white-space:nowrap;
+    }
+
+    .title{
+      font-family:'Playfair Display',serif; font-size:27px; font-weight:700;
+      text-align:center; margin-bottom:4px; letter-spacing:-.3px; transition:.3s;
+    }
+    .subtitle{
+      text-align:center; font-size:13px; color:var(--muted);
+      margin-bottom:26px; font-weight:300;
+    }
+
+    /* ── RATE ROW ── */
+    .rate-row{
+      display:flex; align-items:center; gap:10px; margin-bottom:24px;
+      padding:11px 16px;
+      background:rgba(212,168,83,.07); border:1px solid rgba(212,168,83,.2); border-radius:12px;
+    }
+    .rate-dot{
+      width:8px;height:8px;background:var(--green);border-radius:50%;flex-shrink:0;
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+    .rate-label{font-size:12.5px;color:var(--muted);}
+    .rate-value{font-size:13px;color:var(--accent2);font-weight:600;margin-left:auto;}
+
+    /* ── LABELS ── */
+    .field-label{
+      font-size:11px;font-weight:500;letter-spacing:1.6px;
+      text-transform:uppercase;color:var(--muted);margin-bottom:9px;
+    }
+
+    /* ── DROPDOWN ── */
+    .selector-wrap{position:relative;margin-bottom:8px;}
+    .selector-wrap select{
+      width:100%; background:#1a1a26; border:1.5px solid var(--border);
+      border-radius:12px; padding:11px 34px 11px 46px;
+      font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+      color:var(--text); outline:none; appearance:none; cursor:pointer;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .selector-wrap select option{background:#1a1a26;color:var(--text);}
+    .selector-wrap select:hover,.selector-wrap select:focus{
+      border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,168,83,.1);
+    }
+    .select-flag{
+      position:absolute;left:14px;top:50%;transform:translateY(-50%);
+      font-size:18px;pointer-events:none;
+    }
+    .select-arrow{
+      position:absolute;right:13px;top:50%;transform:translateY(-50%);
+      color:var(--muted);pointer-events:none;font-size:10px;
+    }
+
+    /* ── AMOUNT INPUT ── */
+    .input-wrap{position:relative;}
+    .currency-symbol{
+      position:absolute;left:15px;top:50%;transform:translateY(-50%);
+      font-size:15px;font-weight:600;color:var(--accent);pointer-events:none;
+      font-family:'Playfair Display',serif; max-width:28px; overflow:hidden;
+      white-space:nowrap; font-size:13px;
+    }
+    input[type="number"]{
+      width:100%; background:var(--input-bg); border:1.5px solid var(--border);
+      border-radius:12px; padding:14px 14px 14px 44px;
+      font-family:'DM Sans',sans-serif; font-size:22px; font-weight:500;
+      color:var(--text); outline:none;
+      transition:border-color .2s,box-shadow .2s;
+      -moz-appearance:textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+    input[type="number"]:focus{
+      border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,168,83,.12);
+    }
+
+    .group{margin-bottom:14px;}
+
+    /* ── SWAP ── */
+    .swap-row{display:flex;align-items:center;margin:10px 0;gap:14px;}
+    .swap-line{flex:1;height:1px;background:var(--border);}
+    .swap-btn{
+      background:var(--input-bg);border:1.5px solid var(--border);
+      color:var(--accent);width:40px;height:40px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:17px;flex-shrink:0;
+      transition:background .2s,transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s;
+    }
+    .swap-btn:hover{background:rgba(212,168,83,.13);border-color:var(--accent);transform:rotate(180deg);}
+
+    /* ── QUICK BUTTONS ── */
+    .quick-row{display:flex;gap:7px;margin-top:16px;}
+    .quick-btn{
+      background:var(--input-bg);border:1px solid var(--border);border-radius:8px;
+      color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+      padding:6px 0;cursor:pointer;flex:1;text-align:center;
+      transition:background .18s,color .18s,border-color .18s;
+    }
+    .quick-btn:hover{background:rgba(212,168,83,.1);border-color:rgba(212,168,83,.4);color:var(--accent2);}
+
+    /* ── RESULT BOX ── */
+    .result-box{
+      background:linear-gradient(135deg,rgba(212,168,83,.1) 0%,rgba(232,200,132,.04) 100%);
+      border:1.5px solid rgba(212,168,83,.25);border-radius:16px;
+      padding:20px 24px;text-align:center;margin-top:20px;
+      min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    }
+    .result-label{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+    .result-amount{
+      font-family:'Playfair Display',serif;font-size:30px;font-weight:700;
+      color:var(--accent2);line-height:1.15;
+    }
+    .result-amount.bounce{animation:numBounce .35s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes numBounce{from{transform:scale(.9);opacity:.5}to{transform:scale(1);opacity:1}}
+    .result-sub{font-size:12px;color:var(--muted);margin-top:5px;}
+
+    /* ── EDIT RATES PANEL ── */
+    .edit-toggle{
+      display:flex; align-items:center; justify-content:space-between;
+      margin-top:24px; cursor:pointer; user-select:none;
+    }
+    .section-label{
+      font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);
+    }
+    .toggle-icon{
+      width:28px;height:28px;background:var(--input-bg);border:1px solid var(--border);
+      border-radius:8px;display:flex;align-items:center;justify-content:center;
+      font-size:14px;color:var(--accent);transition:transform .3s;
+    }
+    .toggle-icon.open{transform:rotate(45deg);}
+
+    .rates-panel{
+      overflow:hidden; max-height:0;
+      transition:max-height .45s cubic-bezier(.4,0,.2,1), opacity .3s;
+      opacity:0;
+    }
+    .rates-panel.open{max-height:700px;opacity:1;}
+
+    .rates-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px;
+    }
+    .rate-edit-item{
+      background:rgba(255,255,255,.025);border:1px solid var(--border);
+      border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:5px;
+      transition:border-color .2s;
+    }
+    .rate-edit-item:hover{border-color:rgba(212,168,83,.35);}
+    .rate-edit-top{display:flex;align-items:center;gap:6px;}
+    .rate-edit-flag{font-size:15px;}
+    .rate-edit-code{font-size:12px;font-weight:600;color:var(--accent2);}
+    .rate-edit-name{font-size:10px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px;}
+    .rate-edit-input{
+      background:var(--input-bg);border:1px solid var(--border);
+      border-radius:7px;padding:5px 8px;
+      font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+      color:var(--text);outline:none;width:100%;
+      transition:border-color .2s;
+      -moz-appearance:textfield;
+    }
+    .rate-edit-input::-webkit-inner-spin-button,
+    .rate-edit-input::-webkit-outer-spin-button{-webkit-appearance:none}
+    .rate-edit-input:focus{border-color:var(--accent);}
+    .rate-hint{font-size:10px;color:var(--muted);}
+
+    .reset-btn{
+      margin-top:10px;width:100%;background:transparent;
+      border:1px solid var(--border);border-radius:9px;
+      color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;
+      font-weight:500;padding:8px;cursor:pointer;
+      transition:background .18s,color .18s,border-color .18s;
+    }
+    .reset-btn:hover{background:rgba(232,116,90,.1);border-color:rgba(232,116,90,.4);color:var(--red);}
+
+    /* ── REF GRID ── */
+    .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+    .ref-item{
+      background:rgba(255,255,255,.025);border:1px solid var(--border);
+      border-radius:9px;padding:8px 11px;
+      display:flex;align-items:center;gap:7px;cursor:pointer;
+      transition:background .18s,border-color .18s;
+    }
+    .ref-item:hover{background:rgba(212,168,83,.08);border-color:rgba(212,168,83,.35);}
+    .ref-flag{font-size:14px;}
+    .ref-code{font-size:11px;font-weight:600;color:var(--accent2);}
+    .ref-rate{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap;}
+
+    /* ── FOOTER ── */
+    .footer{margin-top:22px;text-align:center;font-size:11.5px;color:var(--muted);}
+    .footer span{color:rgba(212,168,83,.65);}
+
+    .divider{height:1px;background:var(--border);margin:20px 0 0;}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="badge">Currency Calculator</div>
+
+  <h1 class="title" id="mainTitle">USD → INR</h1>
+  <p class="subtitle">15 world currencies · editable live rates</p>
+
+  <div class="rate-row">
+    <span class="rate-dot"></span>
+    <span class="rate-label" id="rateLabel">1 USD equals</span>
+    <span class="rate-value" id="rateDisplay">—</span>
+  </div>
+
+  <!-- FROM -->
+  <div class="group">
+    <div class="field-label">From</div>
+    <div class="selector-wrap">
+      <span class="select-flag" id="fromFlag">🇺🇸</span>
+      <select id="fromSelect"></select>
+      <span class="select-arrow">▾</span>
+    </div>
+    <div class="input-wrap">
+      <span class="currency-symbol" id="fromSymbol">$</span>
+      <input type="number" id="fromInput" placeholder="0.00" min="0"/>
+    </div>
+  </div>
+
+  <!-- SWAP -->
+  <div class="swap-row">
+    <div class="swap-line"></div>
+    <button class="swap-btn" id="swapBtn" title="Swap">⇅</button>
+    <div class="swap-line"></div>
+  </div>
+
+  <!-- TO -->
+  <div class="group">
+    <div class="field-label">To</div>
+    <div class="selector-wrap">
+      <span class="select-flag" id="toFlag">🇮🇳</span>
+      <select id="toSelect"></select>
+      <span class="select-arrow">▾</span>
+    </div>
+    <div class="input-wrap">
+      <span class="currency-symbol" id="toSymbol">₹</span>
+      <input type="number" id="toInput" placeholder="0.00" min="0"/>
+    </div>
+  </div>
+
+  <!-- QUICK -->
+  <div class="quick-row">
+    <button class="quick-btn" onclick="setQuick(1)">1</button>
+    <button class="quick-btn" onclick="setQuick(10)">10</button>
+    <button class="quick-btn" onclick="setQuick(100)">100</button>
+    <button class="quick-btn" onclick="setQuick(500)">500</button>
+    <button class="quick-btn" onclick="setQuick(1000)">1K</button>
+    <button class="quick-btn" onclick="setQuick(10000)">10K</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-box">
+    <div class="result-label">Converted Amount</div>
+    <div class="result-amount" id="resultDisplay">—</div>
+    <div class="result-sub" id="resultSub">Select currencies and enter an amount</div>
+  </div>
+
+  <!-- EDIT RATES TOGGLE -->
+  <div class="divider"></div>
+  <div class="edit-toggle" id="editToggle">
+    <span class="section-label">✏️ &nbsp;Edit Exchange Rates (vs USD)</span>
+    <span class="toggle-icon" id="toggleIcon">+</span>
+  </div>
+  <div class="rates-panel" id="ratesPanel">
+    <div class="rates-grid" id="ratesGrid"></div>
+    <button class="reset-btn" id="resetBtn">↺ &nbsp;Reset to Default Rates</button>
+  </div>
+
+  <!-- REF GRID -->
+  <div class="divider" style="margin-top:20px;"></div>
+  <div style="margin-top:16px;">
+    <div class="section-label">All Rates vs USD</div>
+    <div class="ref-grid" id="refGrid"></div>
+  </div>
+
+  <p class="footer">Rates editable above &nbsp;·&nbsp; <span>Default: Feb 2026</span></p>
+</div>
+
+<script>
+// ── CURRENCY DATA ─────────────────────────────────────────────
+const DEFAULT_CURRENCIES = [
+  { code:'USD', symbol:'$',    flag:'🇺🇸', label:'US Dollar',          defaultRate:1        },
+  { code:'INR', symbol:'₹',    flag:'🇮🇳', label:'Indian Rupee',        defaultRate:83.92    },
+  { code:'GBP', symbol:'£',    flag:'🇬🇧', label:'British Pound',       defaultRate:0.789    },
+  { code:'EUR', symbol:'€',    flag:'🇪🇺', label:'Euro (DE / ES / FR)', defaultRate:0.921    },
+  { code:'KWD', symbol:'KD',   flag:'🇰🇼', label:'Kuwaiti Dinar',       defaultRate:0.3073   },
+  { code:'BHD', symbol:'BD',   flag:'🇧🇭', label:'Bahraini Dinar',      defaultRate:0.3770   },
+  { code:'SAR', symbol:'SR',   flag:'🇸🇦', label:'Saudi Riyal',         defaultRate:3.751    },
+  { code:'AED', symbol:'د.إ', flag:'🇦🇪', label:'UAE Dirham',          defaultRate:3.673    },
+  { code:'JPY', symbol:'¥',    flag:'🇯🇵', label:'Japanese Yen',        defaultRate:149.58   },
+  { code:'CNY', symbol:'¥',    flag:'🇨🇳', label:'Chinese Yuan',        defaultRate:7.236    },
+  { code:'CAD', symbol:'C$',   flag:'🇨🇦', label:'Canadian Dollar',     defaultRate:1.364    },
+  { code:'AUD', symbol:'A$',   flag:'🇦🇺', label:'Australian Dollar',   defaultRate:1.538    },
+  { code:'CHF', symbol:'Fr',   flag:'🇨🇭', label:'Swiss Franc',         defaultRate:0.889    },
+  { code:'SGD', symbol:'S$',   flag:'🇸🇬', label:'Singapore Dollar',    defaultRate:1.347    },
+  { code:'TRY', symbol:'₺',    flag:'🇹🇷', label:'Turkish Lira',        defaultRate:32.10    },
+];
+
+// Live editable rates — starts as a copy of defaults
+let rates = DEFAULT_CURRENCIES.map(c => c.defaultRate);
+
+let fromIdx = 0; // USD
+let toIdx   = 1; // INR
+
+// ── DOM REFS ──────────────────────────────────────────────────
+const fromSelect    = document.getElementById('fromSelect');
+const toSelect      = document.getElementById('toSelect');
+const fromInput     = document.getElementById('fromInput');
+const toInput       = document.getElementById('toInput');
+const fromFlag      = document.getElementById('fromFlag');
+const toFlag        = document.getElementById('toFlag');
+const fromSymbol    = document.getElementById('fromSymbol');
+const toSymbol      = document.getElementById('toSymbol');
+const resultDisplay = document.getElementById('resultDisplay');
+const resultSub     = document.getElementById('resultSub');
+const rateDisplay   = document.getElementById('rateDisplay');
+const rateLabel     = document.getElementById('rateLabel');
+const mainTitle     = document.getElementById('mainTitle');
+const swapBtn       = document.getElementById('swapBtn');
+const refGrid       = document.getElementById('refGrid');
+const ratesGrid     = document.getElementById('ratesGrid');
+const editToggle    = document.getElementById('editToggle');
+const toggleIcon    = document.getElementById('toggleIcon');
+const ratesPanel    = document.getElementById('ratesPanel');
+const resetBtn      = document.getElementById('resetBtn');
+
+// ── BUILD SELECTS ────────────────────────────────────────────
+function buildSelects() {
+  [fromSelect, toSelect].forEach((sel, si) => {
+    sel.innerHTML = '';
+    DEFAULT_CURRENCIES.forEach((c, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = `${c.flag}  ${c.code}  —  ${c.label}`;
+      sel.appendChild(opt);
+    });
+    sel.value = si === 0 ? fromIdx : toIdx;
+  });
+}
+
+// ── REFERENCE GRID ───────────────────────────────────────────
+function buildRefGrid() {
+  refGrid.innerHTML = '';
+  DEFAULT_CURRENCIES.forEach((c, idx) => {
+    const r = rates[idx];
+    const rStr = r < 1 ? r.toFixed(4) : r.toFixed(2);
+    const div = document.createElement('div');
+    div.className = 'ref-item';
+    div.id = `ref-${idx}`;
+    div.innerHTML = `
+      <span class="ref-flag">${c.flag}</span>
+      <span class="ref-code">${c.code}</span>
+      <span class="ref-rate" id="refrate-${idx}">$1 = ${c.symbol}${rStr}</span>`;
+    div.addEventListener('click', () => {
+      fromIdx = idx; fromSelect.value = idx;
+      updateUI();
+      fromInput.value = 1;
+      convert('from');
+    });
+    refGrid.appendChild(div);
+  });
+}
+
+function refreshRefGrid() {
+  DEFAULT_CURRENCIES.forEach((c, idx) => {
+    const el = document.getElementById(`refrate-${idx}`);
+    if (el) {
+      const r = rates[idx];
+      const rStr = r < 1 ? r.toFixed(4) : r.toFixed(2);
+      el.textContent = `$1 = ${c.symbol}${rStr}`;
+    }
+  });
+}
+
+// ── EDITABLE RATES GRID ─────────────────────────────────────
+function buildRatesGrid() {
+  ratesGrid.innerHTML = '';
+  DEFAULT_CURRENCIES.forEach((c, idx) => {
+    const div = document.createElement('div');
+    div.className = 'rate-edit-item';
+    div.innerHTML = `
+      <div class="rate-edit-top">
+        <span class="rate-edit-flag">${c.flag}</span>
+        <span class="rate-edit-code">${c.code}</span>
+        <span class="rate-edit-name">${c.label}</span>
+      </div>
+      <input class="rate-edit-input" type="number" id="redit-${idx}"
+        value="${rates[idx]}" min="0" step="any"
+        placeholder="Rate vs USD"/>
+      <span class="rate-hint">1 USD = ? ${c.code}</span>`;
+    ratesGrid.appendChild(div);
+
+    const inp = div.querySelector(`#redit-${idx}`);
+    inp.addEventListener('input', () => {
+      const v = parseFloat(inp.value);
+      if (!isNaN(v) && v > 0) {
+        rates[idx] = v;
+        refreshRefGrid();
+        updateUI();
+        if (fromInput.value) convert('from');
+      }
+    });
+  });
+}
+
+// ── TOGGLE EDIT PANEL ────────────────────────────────────────
+editToggle.addEventListener('click', () => {
+  const isOpen = ratesPanel.classList.toggle('open');
+  toggleIcon.textContent = isOpen ? '×' : '+';
+  toggleIcon.classList.toggle('open', isOpen);
+});
+
+resetBtn.addEventListener('click', () => {
+  rates = DEFAULT_CURRENCIES.map(c => c.defaultRate);
+  DEFAULT_CURRENCIES.forEach((_, idx) => {
+    const inp = document.getElementById(`redit-${idx}`);
+    if (inp) inp.value = rates[idx];
+  });
+  refreshRefGrid();
+  updateUI();
+  if (fromInput.value) convert('from');
+});
+
+// ── CONVERSION LOGIC ────────────────────────────────────────
+function getRate() {
+  return rates[toIdx] / rates[fromIdx];
+}
+
+function updateUI() {
+  const f = DEFAULT_CURRENCIES[fromIdx];
+  const t = DEFAULT_CURRENCIES[toIdx];
+  fromFlag.textContent   = f.flag;
+  toFlag.textContent     = t.flag;
+  fromSymbol.textContent = f.symbol;
+  toSymbol.textContent   = t.symbol;
+  fromSelect.value       = fromIdx;
+  toSelect.value         = toIdx;
+  mainTitle.textContent  = `${f.code} → ${t.code}`;
+  const r   = getRate();
+  const dec = r < 0.001 ? 6 : r < 0.1 ? 5 : r < 1 ? 4 : r < 10 ? 3 : 2;
+  rateLabel.textContent  = `1 ${f.code} equals`;
+  rateDisplay.textContent = `${t.symbol}${r.toFixed(dec)}`;
+}
+
+function fmt(n) {
+  if (n >= 100000) return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if (n >= 1)      return n.toFixed(2);
+  if (n >= 0.01)   return n.toFixed(4);
+  return n.toFixed(6);
+}
+
+function convert(source) {
+  const raw = parseFloat(source === 'from' ? fromInput.value : toInput.value);
+  const f = DEFAULT_CURRENCIES[fromIdx];
+  const t = DEFAULT_CURRENCIES[toIdx];
+
+  if (isNaN(raw) || raw === '') {
+    resultDisplay.textContent = '—';
+    resultSub.textContent = 'Enter an amount above to convert';
+    if (source === 'from') toInput.value = '';
+    else fromInput.value = '';
+    return;
+  }
+
+  const rate = getRate();
+  let result;
+
+  if (source === 'from') {
+    result = raw * rate;
+    toInput.value = fmt(result);
+  } else {
+    result = raw / rate;
+    fromInput.value = fmt(result);
+  }
+
+  const inAmt  = source === 'from' ? raw    : result;
+  const outAmt = source === 'from' ? result : raw;
+  const inCur  = source === 'from' ? f : t;
+  const outCur = source === 'from' ? t : f;
+
+  resultDisplay.textContent = `${outCur.symbol}${fmt(outAmt)}`;
+  resultSub.textContent = `${inCur.symbol}${fmt(inAmt)} ${inCur.code} = ${outCur.symbol}${fmt(outAmt)} ${outCur.code}`;
+
+  resultDisplay.classList.remove('bounce');
+  void resultDisplay.offsetWidth;
+  resultDisplay.classList.add('bounce');
+}
+
+function setQuick(n) {
+  fromInput.value = n;
+  convert('from');
+}
+
+// ── EVENTS ──────────────────────────────────────────────────
+fromSelect.addEventListener('change', () => {
+  fromIdx = parseInt(fromSelect.value);
+  updateUI();
+  if (fromInput.value) convert('from');
+});
+toSelect.addEventListener('change', () => {
+  toIdx = parseInt(toSelect.value);
+  updateUI();
+  if (fromInput.value) convert('from');
+});
+swapBtn.addEventListener('click', () => {
+  [fromIdx, toIdx] = [toIdx, fromIdx];
+  const tmp = fromInput.value;
+  fromInput.value = toInput.value;
+  toInput.value = tmp;
+  updateUI();
+  if (fromInput.value) convert('from');
+  else { resultDisplay.textContent='—'; resultSub.textContent='Enter an amount above to convert'; }
+});
+fromInput.addEventListener('input', () => convert('from'));
+toInput.addEventListener('input',   () => convert('to'));
+
+// ── INIT ────────────────────────────────────────────────────
+buildSelects();
+buildRefGrid();
+buildRatesGrid();
+updateUI();
+</script>
+</body>
+</html>

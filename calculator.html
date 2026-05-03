@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metallic Black Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --metal-dark: #0a0a0a;
+    --metal-mid: #1a1a1a;
+    --metal-light: #2e2e2e;
+    --metal-shine: #4a4a4a;
+    --metal-highlight: #666;
+    --chrome-edge: #888;
+    --accent-blue: #00c8ff;
+    --accent-glow: rgba(0, 200, 255, 0.6);
+    --display-bg: #050a0d;
+    --display-text: #00e5ff;
+    --btn-number: #181818;
+    --btn-op: #111;
+    --btn-equal: #0d2a33;
+    --shadow-deep: rgba(0,0,0,0.95);
+    --shadow-mid: rgba(0,0,0,0.7);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 30% 20%, #0d1117 0%, #000 60%, #050505 100%);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.01) 60px, rgba(255,255,255,0.01) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.01) 60px, rgba(255,255,255,0.01) 61px);
+    pointer-events: none;
+  }
+
+  .calc-wrapper {
+    position: relative;
+    filter: drop-shadow(0 40px 80px rgba(0,0,0,0.98)) drop-shadow(0 0 60px rgba(0,200,255,0.08));
+  }
+
+  /* Outer chrome bezel */
+  .calc-outer {
+    background: linear-gradient(145deg,
+      #5a5a5a 0%,
+      #1a1a1a 15%,
+      #0d0d0d 35%,
+      #222 50%,
+      #111 65%,
+      #333 80%,
+      #1f1f1f 100%
+    );
+    border-radius: 22px;
+    padding: 5px;
+    box-shadow:
+      0 0 0 1px #555,
+      0 0 0 2px #222,
+      inset 0 1px 0 #777,
+      inset 0 -1px 0 #111,
+      0 30px 60px rgba(0,0,0,0.9),
+      0 10px 20px rgba(0,0,0,0.8);
+  }
+
+  .calculator {
+    background: linear-gradient(160deg,
+      #1c1c1c 0%,
+      #111 20%,
+      #0d0d0d 40%,
+      #131313 60%,
+      #0f0f0f 80%,
+      #1a1a1a 100%
+    );
+    border-radius: 18px;
+    padding: 28px 24px 30px;
+    width: 340px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.5),
+      inset 1px 0 0 rgba(255,255,255,0.03),
+      inset -1px 0 0 rgba(0,0,0,0.4);
+  }
+
+  /* Brushed metal texture effect */
+  .calculator::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      88deg,
+      transparent 0px,
+      rgba(255,255,255,0.012) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+    border-radius: 18px;
+    pointer-events: none;
+  }
+
+  /* Top reflection */
+  .calculator::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.04) 0%,
+      transparent 100%
+    );
+    border-radius: 18px 18px 0 0;
+    pointer-events: none;
+  }
+
+  /* Brand label */
+  .brand {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 9px;
+    letter-spacing: 6px;
+    color: var(--chrome-edge);
+    text-align: right;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    padding-right: 2px;
+    text-shadow: 0 1px 0 #000, 0 -1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === DISPLAY === */
+  .display-housing {
+    background: linear-gradient(135deg,
+      #0a0a0a 0%,
+      #050505 50%,
+      #080808 100%
+    );
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 24px;
+    box-shadow:
+      0 0 0 1px #000,
+      0 0 0 2px #2a2a2a,
+      inset 0 2px 8px rgba(0,0,0,0.9),
+      0 0 20px rgba(0,200,255,0.05);
+    position: relative;
+    z-index: 1;
+  }
+
+  .display-housing::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 30px rgba(0, 200, 255, 0.04);
+    pointer-events: none;
+  }
+
+  .display {
+    background: linear-gradient(145deg, #040d10 0%, #020609 100%);
+    border-radius: 7px;
+    padding: 14px 18px 12px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    border: 1px solid rgba(0, 200, 255, 0.08);
+    box-shadow:
+      inset 0 0 40px rgba(0,0,0,0.8),
+      inset 0 0 15px rgba(0,200,255,0.06),
+      0 0 0 1px rgba(0,0,0,0.9);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Scan line effect */
+  .display::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    border-radius: 7px;
+  }
+
+  .expression {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: rgba(0,200,255,0.35);
+    min-height: 20px;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .result {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 38px;
+    color: var(--display-text);
+    letter-spacing: 2px;
+    line-height: 1.1;
+    position: relative;
+    z-index: 1;
+    text-shadow:
+      0 0 10px rgba(0,229,255,0.8),
+      0 0 25px rgba(0,229,255,0.4),
+      0 0 50px rgba(0,200,255,0.2);
+    transition: font-size 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .result.small { font-size: 26px; }
+  .result.xsmall { font-size: 20px; }
+
+  /* === BUTTONS === */
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn {
+    position: relative;
+    height: 62px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    transition: all 0.08s ease;
+    user-select: none;
+    outline: none;
+    overflow: hidden;
+  }
+
+  /* Number buttons */
+  .btn.num {
+    background: linear-gradient(145deg,
+      #262626 0%,
+      #1a1a1a 40%,
+      #141414 70%,
+      #1e1e1e 100%
+    );
+    color: #d0d0d0;
+    box-shadow:
+      0 0 0 1px #111,
+      0 4px 0 #0a0a0a,
+      0 6px 12px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -1px 0 rgba(0,0,0,0.6);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.8), 0 -1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Operator buttons */
+  .btn.op {
+    background: linear-gradient(145deg,
+      #1e1e1e 0%,
+      #141414 40%,
+      #0f0f0f 70%,
+      #181818 100%
+    );
+    color: var(--accent-blue);
+    box-shadow:
+      0 0 0 1px #0d0d0d,
+      0 4px 0 #060606,
+      0 6px 12px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(0,200,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.7),
+      0 0 8px rgba(0,200,255,0.05);
+    text-shadow:
+      0 0 8px rgba(0,200,255,0.7),
+      0 0 20px rgba(0,200,255,0.3);
+  }
+
+  /* Function buttons (AC, +/-, %) */
+  .btn.fn {
+    background: linear-gradient(145deg,
+      #252525 0%,
+      #191919 40%,
+      #131313 70%,
+      #1d1d1d 100%
+    );
+    color: #aaa;
+    font-size: 13px;
+    box-shadow:
+      0 0 0 1px #111,
+      0 4px 0 #080808,
+      0 6px 12px rgba(0,0,0,0.75),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.6);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.8);
+  }
+
+  /* Equals button */
+  .btn.eq {
+    background: linear-gradient(145deg,
+      #0e3040 0%,
+      #092535 40%,
+      #061e2b 70%,
+      #0d2d3e 100%
+    );
+    color: var(--display-text);
+    box-shadow:
+      0 0 0 1px #061520,
+      0 4px 0 #040f16,
+      0 6px 16px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(0,200,255,0.15),
+      inset 0 -1px 0 rgba(0,0,0,0.6),
+      0 0 15px rgba(0,200,255,0.1);
+    text-shadow:
+      0 0 10px rgba(0,229,255,0.9),
+      0 0 25px rgba(0,200,255,0.5);
+  }
+
+  /* Zero button spans 2 columns */
+  .btn.zero {
+    grid-column: span 2;
+    text-align: left;
+    padding-left: 24px;
+  }
+
+  /* Hover states */
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn.num:hover {
+    background: linear-gradient(145deg, #2e2e2e 0%, #222 40%, #1c1c1c 70%, #262626 100%);
+    box-shadow:
+      0 0 0 1px #161616,
+      0 5px 0 #0a0a0a,
+      0 8px 16px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .btn.op:hover {
+    box-shadow:
+      0 0 0 1px #0d0d0d,
+      0 5px 0 #060606,
+      0 8px 16px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(0,200,255,0.12),
+      0 0 16px rgba(0,200,255,0.2);
+    color: #33daff;
+  }
+
+  .btn.eq:hover {
+    box-shadow:
+      0 0 0 1px #061520,
+      0 5px 0 #040f16,
+      0 8px 20px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(0,200,255,0.2),
+      0 0 25px rgba(0,200,255,0.25);
+  }
+
+  /* Active/pressed states */
+  .btn:active, .btn.pressed {
+    transform: translateY(3px) !important;
+    transition: all 0.04s ease;
+  }
+
+  .btn.num:active, .btn.num.pressed {
+    box-shadow:
+      0 0 0 1px #111,
+      0 1px 0 #0a0a0a,
+      0 2px 6px rgba(0,0,0,0.7),
+      inset 0 2px 4px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(0,0,0,0.8);
+    background: linear-gradient(145deg, #181818 0%, #141414 100%);
+  }
+
+  .btn.op:active, .btn.op.pressed {
+    box-shadow:
+      0 0 0 1px #0d0d0d,
+      0 1px 0 #060606,
+      0 2px 6px rgba(0,0,0,0.8),
+      inset 0 2px 4px rgba(0,0,0,0.6),
+      0 0 12px rgba(0,200,255,0.3);
+  }
+
+  .btn.eq:active, .btn.eq.pressed {
+    box-shadow:
+      0 0 0 1px #061520,
+      0 1px 0 #040f16,
+      0 2px 8px rgba(0,0,0,0.85),
+      inset 0 2px 4px rgba(0,0,0,0.5),
+      0 0 30px rgba(0,200,255,0.4);
+  }
+
+  /* Reflective sheen on buttons */
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.055) 0%,
+      rgba(255,255,255,0.01) 60%,
+      transparent 100%
+    );
+    border-radius: 10px 10px 0 0;
+    pointer-events: none;
+  }
+
+  /* Bottom edge of button */
+  .btn::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 2px; right: 2px;
+    height: 4px;
+    border-radius: 0 0 8px 8px;
+    pointer-events: none;
+  }
+
+  .btn.num::after { background: rgba(0,0,0,0.9); }
+  .btn.op::after { background: rgba(0,0,0,0.95); }
+  .btn.eq::after { background: rgba(0,5,10,0.95); }
+
+  /* Decorative screws */
+  .screws {
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .screw {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+      #555 0%, #2a2a2a 40%, #111 70%, #1e1e1e 100%
+    );
+    box-shadow:
+      0 0 0 1px #0a0a0a,
+      inset 0 1px 0 rgba(255,255,255,0.15),
+      0 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .screw::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: transparent;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(0,0,0,0.8);
+    transform: rotate(45deg);
+  }
+
+  .screw.tl { top: 0; left: 0; }
+  .screw.tr { top: 0; right: 0; }
+  .screw.bl { bottom: 0; left: 0; }
+  .screw.br { bottom: 0; right: 0; }
+
+  /* Error flash */
+  @keyframes errorFlash {
+    0% { color: #ff4444; text-shadow: 0 0 10px rgba(255,0,0,0.8); }
+    50% { color: var(--display-text); }
+    100% { color: #ff4444; text-shadow: 0 0 10px rgba(255,0,0,0.8); }
+  }
+
+  .result.error {
+    animation: errorFlash 0.3s ease 2;
+    font-size: 20px;
+  }
+
+  /* Glow pulse on calc */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 1px #555, 0 0 0 2px #222, inset 0 1px 0 #777, inset 0 -1px 0 #111, 0 30px 60px rgba(0,0,0,0.9), 0 10px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,200,255,0.03); }
+    50% { box-shadow: 0 0 0 1px #555, 0 0 0 2px #222, inset 0 1px 0 #777, inset 0 -1px 0 #111, 0 30px 60px rgba(0,0,0,0.9), 0 10px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,200,255,0.08); }
+  }
+
+  .calc-outer {
+    animation: glowPulse 4s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="calc-wrapper">
+  <div class="calc-outer">
+    <div class="calculator">
+      <!-- Corner screws -->
+      <div class="screws">
+        <div class="screw tl"></div>
+        <div class="screw tr"></div>
+        <div class="screw bl"></div>
+        <div class="screw br"></div>
+      </div>
+
+      <!-- Brand -->
+      <div class="brand">CALC-X9 &nbsp; ◈</div>
+
+      <!-- Display -->
+      <div class="display-housing">
+        <div class="display">
+          <div class="expression" id="expression"></div>
+          <div class="result" id="result">0</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <!-- Row 1 -->
+        <button class="btn fn" data-action="clear">AC</button>
+        <button class="btn fn" data-action="negate">+/−</button>
+        <button class="btn fn" data-action="percent">%</button>
+        <button class="btn op" data-action="operator" data-value="÷">÷</button>
+
+        <!-- Row 2 -->
+        <button class="btn num" data-action="digit" data-value="7">7</button>
+        <button class="btn num" data-action="digit" data-value="8">8</button>
+        <button class="btn num" data-action="digit" data-value="9">9</button>
+        <button class="btn op" data-action="operator" data-value="×">×</button>
+
+        <!-- Row 3 -->
+        <button class="btn num" data-action="digit" data-value="4">4</button>
+        <button class="btn num" data-action="digit" data-value="5">5</button>
+        <button class="btn num" data-action="digit" data-value="6">6</button>
+        <button class="btn op" data-action="operator" data-value="−">−</button>
+
+        <!-- Row 4 -->
+        <button class="btn num" data-action="digit" data-value="1">1</button>
+        <button class="btn num" data-action="digit" data-value="2">2</button>
+        <button class="btn num" data-action="digit" data-value="3">3</button>
+        <button class="btn op" data-action="operator" data-value="+">+</button>
+
+        <!-- Row 5 -->
+        <button class="btn num zero" data-action="digit" data-value="0">0</button>
+        <button class="btn num" data-action="decimal">.</button>
+        <button class="btn eq" data-action="equals">=</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('result');
+  const expression = document.getElementById('expression');
+
+  let current = '0';
+  let operator = null;
+  let prev = null;
+  let waiting = false;
+  let justCalculated = false;
+
+  function updateDisplay(val) {
+    const len = String(val).length;
+    display.classList.remove('small', 'xsmall', 'error');
+    if (len > 12) display.classList.add('xsmall');
+    else if (len > 9) display.classList.add('small');
+    display.textContent = val;
+  }
+
+  function setExpression(txt) {
+    expression.textContent = txt;
+  }
+
+  function flashButton(btn) {
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 120);
+  }
+
+  function handleDigit(val) {
+    if (waiting) {
+      current = val;
+      waiting = false;
+    } else if (justCalculated) {
+      current = val;
+      justCalculated = false;
+    } else {
+      current = current === '0' ? val : (current.length < 14 ? current + val : current);
+    }
+    updateDisplay(formatNumber(current));
+  }
+
+  function handleDecimal() {
+    if (waiting) { current = '0.'; waiting = false; return; }
+    if (justCalculated) { current = '0.'; justCalculated = false; return; }
+    if (!current.includes('.')) current += '.';
+    updateDisplay(current);
+  }
+
+  function handleOperator(op) {
+    const num = parseFloat(current);
+    if (prev !== null && !waiting) {
+      const result = calculate(prev, num, operator);
+      prev = result;
+      current = String(result);
+      updateDisplay(formatNumber(result));
+    } else {
+      prev = num;
+    }
+    operator = op;
+    waiting = true;
+    justCalculated = false;
+    setExpression(formatNumber(prev) + ' ' + op);
+  }
+
+  function handleEquals() {
+    if (operator === null || prev === null) return;
+    const num = parseFloat(current);
+    setExpression(formatNumber(prev) + ' ' + operator + ' ' + formatNumber(num) + ' =');
+    const result = calculate(prev, num, operator);
+    if (result === 'Error') {
+      display.classList.add('error');
+      display.textContent = 'Error';
+      setTimeout(() => { display.classList.remove('error'); updateDisplay('0'); }, 1200);
+      reset(); return;
+    }
+    current = String(result);
+    updateDisplay(formatNumber(result));
+    prev = null;
+    operator = null;
+    waiting = false;
+    justCalculated = true;
+  }
+
+  function calculate(a, b, op) {
+    switch(op) {
+      case '+': return round(a + b);
+      case '−': return round(a - b);
+      case '×': return round(a * b);
+      case '÷': return b === 0 ? 'Error' : round(a / b);
+    }
+  }
+
+  function round(n) {
+    return Math.round(n * 1e10) / 1e10;
+  }
+
+  function formatNumber(n) {
+    if (typeof n === 'string') return n;
+    if (isNaN(n)) return 'Error';
+    const str = String(n);
+    if (str.includes('e')) return n.toExponential(4);
+    return str;
+  }
+
+  function reset() {
+    current = '0'; operator = null; prev = null; waiting = false; justCalculated = false;
+    updateDisplay('0'); setExpression('');
+  }
+
+  function handleClear() {
+    reset();
+  }
+
+  function handleNegate() {
+    current = String(parseFloat(current) * -1);
+    updateDisplay(formatNumber(parseFloat(current)));
+  }
+
+  function handlePercent() {
+    current = String(parseFloat(current) / 100);
+    updateDisplay(formatNumber(parseFloat(current)));
+  }
+
+  // Button click handling
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      flashButton(btn);
+      const action = btn.dataset.action;
+      const value = btn.dataset.value;
+
+      switch(action) {
+        case 'digit':    handleDigit(value); break;
+        case 'decimal':  handleDecimal(); break;
+        case 'operator': handleOperator(value); break;
+        case 'equals':   handleEquals(); break;
+        case 'clear':    handleClear(); break;
+        case 'negate':   handleNegate(); break;
+        case 'percent':  handlePercent(); break;
+      }
+    });
+  });
+
+  // Keyboard support
+  document.addEventListener('keydown', e => {
+    const map = {
+      '0':'0','1':'1','2':'2','3':'3','4':'4',
+      '5':'5','6':'6','7':'7','8':'8','9':'9',
+      '+':'+','-':'−','*':'×','/':'÷',
+      'Enter':'=','=':'=','.':'.','Backspace':'back','Escape':'clear','%':'%'
+    };
+    const key = map[e.key];
+    if (!key) return;
+    e.preventDefault();
+
+    if (key === 'clear') { handleClear(); return; }
+    if (key === 'back') {
+      if (current.length > 1) current = current.slice(0,-1);
+      else current = '0';
+      updateDisplay(formatNumber(current));
+      return;
+    }
+    if (key === '=') { handleEquals(); return; }
+    if (['+','−','×','÷'].includes(key)) { handleOperator(key); return; }
+    if (key === '.') { handleDecimal(); return; }
+    if (key === '%') { handlePercent(); return; }
+    handleDigit(key);
+  });
+</script>
+</body>
+</html>
