@@ -213,7 +213,7 @@
          LIVE CLOCK — updates every second
     ================================ -->
     <div class="clock">
-      Current Time
+      <span id="clockLabel">Current Time</span>
       <span id="liveTime">--:--:--</span>
     </div>
 
@@ -286,16 +286,33 @@
     // -----------------------------------------------
     // LIVE CLOCK — ticks every 1 second
     // -----------------------------------------------
+    let cityLocalTime = null; // stores city's localtime string from API
+    let cityName_clock = null;
+
     function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById("liveTime").textContent = `${h}:${m}:${s}`;
+      if (cityLocalTime) {
+        // cityLocalTime is like "2026-05-09 09:00"
+        // We parse it and add seconds manually since API gives HH:MM only
+        const now = new Date();
+        const base = new Date(cityLocalTime);
+        // Add seconds from local clock offset
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const h = String(base.getHours()).padStart(2, '0');
+        const m = String(base.getMinutes()).padStart(2, '0');
+        document.getElementById("liveTime").textContent = `${h}:${m}:${seconds}`;
+        document.getElementById("clockLabel").textContent = `🌍 Local Time in ${cityName_clock}`;
+      } else {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById("liveTime").textContent = `${h}:${m}:${s}`;
+        document.getElementById("clockLabel").textContent = `Current Time`;
+      }
     }
 
-    setInterval(updateClock, 1000);  // Every 1000ms = 1 second
-    updateClock();                   // Run immediately on page load
+    setInterval(updateClock, 1000);
+    updateClock();
 
     // -----------------------------------------------
     // GET WEATHER — triggered by the Search button
@@ -354,11 +371,15 @@
       const country    = data.location.country;
       const temp       = Math.round(data.current.temp_c);
       const desc       = data.current.condition.text;
-      const iconUrl    = "https:" + data.current.condition.icon; // WeatherAPI gives "//cdn..." so we add "https:"
+      const iconUrl    = "https:" + data.current.condition.icon;
       const humidity   = data.current.humidity;
       const wind       = data.current.wind_kph;
       const feelsLike  = Math.round(data.current.feelslike_c);
       const visibility = data.current.vis_km;
+
+      // Update clock to show city's local time
+      cityLocalTime = data.location.localtime; // e.g. "2026-05-09 14:30"
+      cityName_clock = city;
 
       // Fill in the HTML elements
       document.getElementById("weatherIcon").src          = iconUrl;
