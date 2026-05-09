@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+
+  <!-- Google Font: Nunito — friendly and easy to read -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ================================
+       CSS VARIABLES (like settings)
+       Change these to restyle the app!
+    ================================ */
+    :root {
+      --bg: #0f1b2d;
+      --card: #1a2d45;
+      --card2: #162438;
+      --accent: #38bdf8;
+      --accent2: #fb923c;
+      --text: #e2e8f0;
+      --muted: #7f9ab5;
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* App title */
+    .app-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    /* ================================
+       LIVE CLOCK
+    ================================ */
+    .clock {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    /* The time updates every second via JS */
+    #liveTime {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* ================================
+       SEARCH BOX
+    ================================ */
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-family: 'Nunito', sans-serif;
+      background: var(--card);
+      border: 2px solid #2a4060;
+      border-radius: var(--radius);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    /* Input glows blue when focused */
+    .search-box input:focus { border-color: var(--accent); }
+
+    .search-box button {
+      padding: 12px 18px;
+      font-size: 15px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      background: var(--accent);
+      color: #0f1b2d;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .search-box button:hover { opacity: 0.85; }
+
+    /* Error message */
+    .error {
+      color: #f87171;
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ================================
+       MAIN WEATHER CARD
+    ================================ */
+    .weather-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      border: 1px solid #2a4060;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* WeatherAPI gives us a real icon image URL — we show it here */
+    #weatherIcon {
+      width: 80px;
+      height: 80px;
+      display: block;
+      margin: 0 auto 8px;
+    }
+
+    .city-name    { font-size: 22px; font-weight: 800; }
+    .temperature  { font-size: 52px; font-weight: 800; color: var(--accent2); line-height: 1.1; }
+    .description  { font-size: 15px; color: var(--muted); margin: 6px 0 16px; text-transform: capitalize; }
+
+    /* 2-column grid for extra details */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .detail-item  { background: #0f1b2d; border-radius: 12px; padding: 12px; }
+    .detail-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+    .detail-value { font-size: 20px; font-weight: 700; color: var(--accent); }
+
+    /* ================================
+       SEARCH HISTORY
+    ================================ */
+    .history-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .history-item {
+      background: var(--card2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 1px solid #2a4060;
+      transition: background 0.2s;
+    }
+
+    .history-item:hover { background: #1f3a5f; }
+
+    .history-left  { display: flex; align-items: center; gap: 10px; }
+
+    /* Small weather icon in history */
+    .history-icon  { width: 36px; height: 36px; }
+
+    .history-city  { font-size: 15px; font-weight: 700; }
+    .history-time  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .history-temp  { font-size: 18px; font-weight: 800; color: var(--accent2); }
+
+    /* Hides an element — JS adds/removes this */
+    .hidden { display: none; }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <h1 class="app-title">🌤️ Weather App</h1>
+
+    <!-- ================================
+         LIVE CLOCK — updates every second
+    ================================ -->
+    <div class="clock">
+      Current Time
+      <span id="liveTime">--:--:--</span>
+    </div>
+
+    <!-- ================================
+         SEARCH BOX
+    ================================ -->
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Enter city name..." />
+      <button onclick="getWeather()">Search</button>
+    </div>
+
+    <!-- Error message (hidden until needed) -->
+    <p class="error hidden" id="errorMsg">❌ City not found. Please try again.</p>
+
+    <!-- ================================
+         MAIN WEATHER CARD
+         Hidden until we get data
+    ================================ -->
+    <div class="weather-card hidden" id="weatherCard">
+      <!-- WeatherAPI gives real weather icons (image URLs) -->
+      <img class="" id="weatherIcon" src="" alt="weather icon" />
+      <div class="city-name" id="cityName">--</div>
+      <div class="temperature" id="temperature">--°C</div>
+      <div class="description" id="description">--</div>
+      <div class="details-grid">
+        <div class="detail-item">
+          <div class="detail-label">💧 Humidity</div>
+          <div class="detail-value" id="humidity">--%</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">💨 Wind</div>
+          <div class="detail-value" id="wind">-- kph</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">🌡️ Feels Like</div>
+          <div class="detail-value" id="feelsLike">--°C</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">👁️ Visibility</div>
+          <div class="detail-value" id="visibility">-- km</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================
+         HISTORY SECTION
+         Shows last 3 searches
+    ================================ -->
+    <div id="historySection" class="hidden">
+      <div class="history-title">🕐 Recent Searches</div>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+
+  <script>
+
+    // -----------------------------------------------
+    // API SETUP — using WeatherAPI.com
+    // Docs: https://www.weatherapi.com/docs/
+    // -----------------------------------------------
+    const API_KEY = "16a06cd04ee64ea5be294534260304";
+    const API_URL = "https://api.weatherapi.com/v1/current.json";
+    // WeatherAPI URL format:
+    // https://api.weatherapi.com/v1/current.json?key=YOUR_KEY&q=CITY
+
+    // Array to store last 3 searches
+    let searchHistory = [];
+
+    // -----------------------------------------------
+    // LIVE CLOCK — ticks every 1 second
+    // -----------------------------------------------
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("liveTime").textContent = `${h}:${m}:${s}`;
+    }
+
+    setInterval(updateClock, 1000);  // Every 1000ms = 1 second
+    updateClock();                   // Run immediately on page load
+
+    // -----------------------------------------------
+    // GET WEATHER — triggered by the Search button
+    // -----------------------------------------------
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+
+      if (!city) { alert("Please type a city name!"); return; }
+
+      // Hide old results
+      hideEl("weatherCard");
+      hideEl("errorMsg");
+
+      // Build the API URL
+      // WeatherAPI uses ?key= instead of ?appid= (different from OpenWeatherMap)
+      const url = `${API_URL}?key=${API_KEY}&q=${city}`;
+
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          showEl("errorMsg");
+          return;
+        }
+
+        // Convert response to JavaScript object
+        const data = await response.json();
+
+        displayWeather(data);   // Show weather
+        saveToHistory(data);    // Save to history
+
+      } catch (err) {
+        console.error("Fetch error:", err);
+        showEl("errorMsg");
+      }
+    }
+
+    // -----------------------------------------------
+    // DISPLAY WEATHER — WeatherAPI response structure
+    // Note: WeatherAPI uses data.location and data.current
+    //       (different from OpenWeatherMap which uses data.main)
+    // -----------------------------------------------
+    function displayWeather(data) {
+      // WeatherAPI data structure:
+      // data.location.name       → city name
+      // data.location.country    → country
+      // data.current.temp_c      → temperature in Celsius
+      // data.current.condition.text  → e.g. "Partly cloudy"
+      // data.current.condition.icon  → URL to weather icon image
+      // data.current.humidity    → humidity %
+      // data.current.wind_kph    → wind speed in km/h
+      // data.current.feelslike_c → feels like temperature
+      // data.current.vis_km      → visibility in km
+
+      const city       = data.location.name;
+      const country    = data.location.country;
+      const temp       = Math.round(data.current.temp_c);
+      const desc       = data.current.condition.text;
+      const iconUrl    = "https:" + data.current.condition.icon; // WeatherAPI gives "//cdn..." so we add "https:"
+      const humidity   = data.current.humidity;
+      const wind       = data.current.wind_kph;
+      const feelsLike  = Math.round(data.current.feelslike_c);
+      const visibility = data.current.vis_km;
+
+      // Fill in the HTML elements
+      document.getElementById("weatherIcon").src          = iconUrl;
+      document.getElementById("cityName").textContent     = `${city}, ${country}`;
+      document.getElementById("temperature").textContent  = `${temp}°C`;
+      document.getElementById("description").textContent  = desc;
+      document.getElementById("humidity").textContent     = `${humidity}%`;
+      document.getElementById("wind").textContent         = `${wind} kph`;
+      document.getElementById("feelsLike").textContent    = `${feelsLike}°C`;
+      document.getElementById("visibility").textContent   = `${visibility} km`;
+
+      showEl("weatherCard");
+    }
+
+    // -----------------------------------------------
+    // SAVE TO HISTORY — keeps last 3 searches
+    // -----------------------------------------------
+    function saveToHistory(data) {
+      const entry = {
+        city:    data.location.name + ", " + data.location.country,
+        temp:    Math.round(data.current.temp_c),
+        iconUrl: "https:" + data.current.condition.icon,  // Real icon from WeatherAPI
+        time:    getTimeNow()
+      };
+
+      searchHistory.unshift(entry);           // Add to front of array
+
+      if (searchHistory.length > 3) {
+        searchHistory = searchHistory.slice(0, 3);  // Keep only 3
+      }
+
+      renderHistory();
+    }
+
+    // -----------------------------------------------
+    // RENDER HISTORY — draws history rows on screen
+    // -----------------------------------------------
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      list.innerHTML = "";   // Clear old items
+
+      searchHistory.forEach(function(entry) {
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        // Use real weather icon image in history too!
+        item.innerHTML = `
+          <div class="history-left">
+            <img class="history-icon" src="${entry.iconUrl}" alt="icon" />
+            <div>
+              <div class="history-city">${entry.city}</div>
+              <div class="history-time">Searched at ${entry.time}</div>
+            </div>
+          </div>
+          <div class="history-temp">${entry.temp}°C</div>
+        `;
+
+        // Click to re-search that city
+        item.onclick = function () {
+          document.getElementById("cityInput").value = entry.city.split(",")[0];
+          getWeather();
+        };
+
+        list.appendChild(item);
+      });
+
+      showEl("historySection");
+    }
+
+    // -----------------------------------------------
+    // HELPER — current time as "HH:MM"
+    // -----------------------------------------------
+    function getTimeNow() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
+    // -----------------------------------------------
+    // HELPERS — show / hide elements
+    // -----------------------------------------------
+    function showEl(id) { document.getElementById(id).classList.remove("hidden"); }
+    function hideEl(id) { document.getElementById(id).classList.add("hidden"); }
+
+    // -----------------------------------------------
+    // Press Enter to search
+    // -----------------------------------------------
+    document.getElementById("cityInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") getWeather();
+    });
+
+  </script>
+
+</body>
+</html>
