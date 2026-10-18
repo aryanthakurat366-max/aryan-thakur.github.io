@@ -1,382 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aryan Thakur | Portfolio</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aryan Thakur | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04050b;
+  --bg2:#080b17;
+  --red:#ff2d3d;
+  --red-soft:#ff5a66;
+  --blue:#2f6bff;
+  --glass:rgba(255,255,255,.04);
+  --glass-b:rgba(255,255,255,.10);
+  --text:#e9ecf8;
+  --mute:#8c93b3;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);
+  overflow-x:hidden;line-height:1.65;
+}
+::selection{background:var(--red);color:#fff}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:linear-gradient(var(--red),var(--blue));border-radius:8px}
+
+#bg{position:fixed;inset:0;z-index:-2;width:100%;height:100%}
+.glow{position:fixed;z-index:-1;border-radius:50%;filter:blur(120px);pointer-events:none}
+.glow.a{width:520px;height:520px;background:rgba(255,45,61,.22);top:-160px;left:-120px}
+.glow.b{width:600px;height:600px;background:rgba(47,107,255,.20);bottom:-220px;right:-160px}
+
+/* progress web-line */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:300;background:linear-gradient(90deg,var(--blue),var(--red));box-shadow:0 0 12px var(--red)}
+
+/* NAV */
+nav{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;
+  display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;
+  background:rgba(10,12,24,.65);backdrop-filter:blur(18px);
+  border:1px solid var(--glass-b);border-radius:999px;
+  box-shadow:0 10px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.mark{
+  width:40px;height:40px;display:grid;place-items:center;border-radius:50%;
+  font-family:'Rajdhani';font-weight:700;letter-spacing:1px;color:#fff;text-decoration:none;font-size:1.05rem;
+  background:radial-gradient(circle at 30% 25%,#ff5a66,#b3000f);box-shadow:0 0 18px rgba(255,45,61,.6);
+}
+nav ul{display:flex;list-style:none;gap:2px}
+nav ul a{
+  font-family:'Rajdhani';font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:.88rem;
+  color:var(--mute);text-decoration:none;padding:9px 18px;border-radius:999px;transition:.25s;display:block;
+}
+nav ul a:hover,nav ul a.act{color:#fff;background:rgba(255,45,61,.16);box-shadow:inset 0 0 0 1px rgba(255,45,61,.45)}
+.burger{display:none;background:none;border:0;color:#fff;font-size:1.3rem;padding:0 12px;cursor:pointer}
+
+section{padding:120px 6% 60px;position:relative}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* HERO */
+#home{min-height:100vh;display:flex;align-items:center;padding-top:130px}
+.hero{display:grid;grid-template-columns:400px 1fr;gap:80px;align-items:center;max-width:1180px;margin:0 auto;width:100%}
+.photo{position:relative;width:100%;max-width:400px}
+.ring{position:absolute;inset:-18px;border:1px solid rgba(255,45,61,.5);border-radius:28px;animation:sense 3s ease-out infinite;pointer-events:none}
+.ring.r2{animation-delay:1.5s}
+@keyframes sense{0%{transform:scale(.97);opacity:.9}100%{transform:scale(1.13);opacity:0}}
+.frame{
+  position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:22px;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 0 6px rgba(255,255,255,.03),0 30px 80px rgba(0,0,0,.7),0 0 60px rgba(255,45,61,.25);
+  background:#000;
+}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(1.05);transition:opacity .35s}
+.frame::before{ /* scan line */
+  content:"";position:absolute;left:0;right:0;height:90px;z-index:2;
+  background:linear-gradient(180deg,transparent,rgba(255,45,61,.22),transparent);
+  animation:scan 4.5s linear infinite;pointer-events:none;
+}
+@keyframes scan{0%{top:-100px}100%{top:100%}}
+.frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(4,5,11,.75));pointer-events:none}
+.br{position:absolute;width:26px;height:26px;border:2px solid var(--red);z-index:3}
+.br.tl{top:12px;left:12px;border-right:0;border-bottom:0}.br.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.br.bl{bottom:12px;left:12px;border-right:0;border-top:0}.br.brr{bottom:12px;right:12px;border-left:0;border-top:0}
+.hud{position:absolute;left:18px;bottom:16px;z-index:3;font-family:'Rajdhani';letter-spacing:3px;font-size:.75rem;color:#fff;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.hud i{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.thumbs{display:flex;gap:10px;margin-top:26px;justify-content:center}
+.thumbs img{width:52px;height:52px;object-fit:cover;border-radius:12px;cursor:pointer;opacity:.5;border:1px solid var(--glass-b);transition:.25s}
+.thumbs img:hover{opacity:.9;transform:translateY(-4px)}
+.thumbs img.on{opacity:1;border-color:var(--red);box-shadow:0 0 16px rgba(255,45,61,.55)}
+
+.eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:'Rajdhani';font-weight:600;letter-spacing:6px;text-transform:uppercase;font-size:.9rem;color:var(--red-soft)}
+.eyebrow::before{content:"";width:46px;height:1px;background:linear-gradient(90deg,transparent,var(--red))}
+h1{
+  font-family:'Rajdhani';font-weight:700;text-transform:uppercase;line-height:.88;
+  font-size:clamp(4rem,9.5vw,8rem);letter-spacing:2px;margin:16px 0 10px;
+}
+h1 .l1{display:block;color:#fff}
+h1 .l2{display:block;background:linear-gradient(100deg,#ff2d3d 20%,#ff7b86 60%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(255,45,61,.45))}
+.role{font-family:'Rajdhani';font-size:1.35rem;font-weight:600;letter-spacing:3px;color:#fff;margin:14px 0 6px;min-height:2rem}
+.role span{color:var(--red-soft)}
+.cursor{display:inline-block;width:2px;height:1.1em;background:var(--red);margin-left:4px;vertical-align:-3px;animation:blink 1s infinite}
+.bio{max-width:540px;color:var(--mute);font-size:1.05rem}
+.bio b{color:#fff;font-weight:600}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 30px}
+.chips span{font-family:'Rajdhani';font-weight:600;letter-spacing:2px;font-size:.9rem;padding:5px 14px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass);color:#cfd4ee}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  font-family:'Rajdhani';font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:.95rem;
+  padding:15px 34px;border-radius:999px;text-decoration:none;transition:.3s;display:inline-block;
+}
+.btn.p{background:linear-gradient(135deg,#ff2d3d,#b3000f);color:#fff;box-shadow:0 8px 30px rgba(255,45,61,.4)}
+.btn.p:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(255,45,61,.6)}
+.btn.g{color:#fff;border:1px solid var(--glass-b);background:var(--glass)}
+.btn.g:hover{border-color:var(--blue);box-shadow:0 0 28px rgba(47,107,255,.4);transform:translateY(-3px)}
+.socials{display:flex;gap:8px 24px;flex-wrap:wrap;margin-top:34px}
+.socials a{font-family:'Rajdhani';font-weight:600;letter-spacing:3px;text-transform:uppercase;font-size:.85rem;color:var(--mute);text-decoration:none;position:relative;padding-bottom:3px;transition:.25s}
+.socials a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--red);transition:.3s}
+.socials a:hover{color:#fff}.socials a:hover::after{width:100%}
+.swing{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Rajdhani';letter-spacing:5px;font-size:.72rem;color:var(--mute)}
+.swing::after{content:"";width:1px;height:44px;background:linear-gradient(var(--red),transparent);animation:drop 2s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* SECTION HEADS */
+.head{margin-bottom:54px}
+.head .no{font-family:'Rajdhani';font-weight:700;letter-spacing:6px;color:var(--red-soft);font-size:.9rem}
+.head h2{font-family:'Rajdhani';font-weight:700;text-transform:uppercase;letter-spacing:3px;font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.05;margin:6px 0 10px;color:#fff}
+.head h2::after{content:"";display:block;width:90px;height:3px;margin-top:14px;background:linear-gradient(90deg,var(--red),var(--blue));box-shadow:0 0 14px var(--red)}
+.head p{color:var(--mute);max-width:560px}
+
+/* glass cards */
+.card{
+  position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;
+  backdrop-filter:blur(10px);transition:.35s;overflow:hidden;
+}
+.card::before{ /* top light streak */
+  content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+}
+.card::after{ /* mouse glow */
+  content:"";position:absolute;inset:0;opacity:0;transition:.3s;pointer-events:none;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(255,45,61,.16),transparent 60%);
+}
+.card:hover{border-color:rgba(255,45,61,.45);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.5),0 0 40px rgba(255,45,61,.12)}
+.card:hover::after{opacity:1}
+
+/* ACADEMIC */
+.acad{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px;margin-bottom:44px}
+.acad .card{padding:30px 28px}
+.acad .k{font-family:'Rajdhani';letter-spacing:4px;font-size:.78rem;color:var(--red-soft);font-weight:700}
+.acad h3{font-family:'Rajdhani';font-size:1.55rem;letter-spacing:1px;line-height:1.15;margin:8px 0 8px;color:#fff}
+.acad p{color:var(--mute);font-size:.95rem}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.gal figure{border-radius:16px;overflow:hidden;border:1px solid var(--glass-b);background:var(--bg2);cursor:zoom-in;transition:.35s;position:relative}
+.gal figure:hover{transform:translateY(-6px) scale(1.02);border-color:var(--red);box-shadow:0 18px 40px rgba(0,0,0,.6),0 0 30px rgba(255,45,61,.25)}
+.gal img{width:100%;height:160px;object-fit:cover;display:block;opacity:.9;transition:.35s}
+.gal figure:hover img{opacity:1}
+.gal figcaption{padding:12px 16px;font-family:'Rajdhani';letter-spacing:2px;font-weight:600;font-size:.9rem;text-transform:uppercase;color:#d5d9f2;border-top:1px solid var(--glass-b)}
+
+/* PROJECTS */
+.projs{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:26px}
+.proj{padding:32px 30px;display:flex;flex-direction:column}
+.proj .n{position:absolute;top:18px;right:24px;font-family:'Rajdhani';font-weight:700;font-size:3.2rem;line-height:1;color:rgba(255,255,255,.06)}
+.proj .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;background:linear-gradient(135deg,rgba(255,45,61,.2),rgba(47,107,255,.2));border:1px solid var(--glass-b);margin-bottom:18px}
+.proj h3{font-family:'Rajdhani';font-size:1.6rem;letter-spacing:1px;line-height:1.15;color:#fff;margin-bottom:10px}
+.proj p{color:var(--mute);font-size:.95rem;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 22px}
+.tags span{font-family:'Rajdhani';font-weight:600;letter-spacing:1.5px;font-size:.78rem;text-transform:uppercase;padding:3px 12px;border-radius:999px;background:rgba(47,107,255,.14);border:1px solid rgba(47,107,255,.4);color:#a9c1ff}
+.go{align-self:flex-start;font-family:'Rajdhani';font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:.9rem;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:10px}
+.go span{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--red);transition:.3s;box-shadow:0 0 16px rgba(255,45,61,.5)}
+.go:hover span{transform:translateX(6px)}
+
+/* SKILLS */
+.sk{display:grid;grid-template-columns:1.3fr 1fr;gap:34px}
+.sk .card{padding:34px 32px}
+.sk h3{font-family:'Rajdhani';letter-spacing:4px;text-transform:uppercase;font-size:1.05rem;color:var(--red-soft);margin-bottom:26px}
+.bar{margin-bottom:22px}
+.bt{display:flex;justify-content:space-between;font-family:'Rajdhani';font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:.95rem;margin-bottom:8px}
+.bt b{color:var(--red-soft)}
+.track{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--red));box-shadow:0 0 14px rgba(255,45,61,.7);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.cert{display:inline-block;margin-top:8px;font-family:'Rajdhani';font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:.85rem;padding:9px 20px;border-radius:999px;border:1px solid var(--red);color:#fff;background:rgba(255,45,61,.12);box-shadow:0 0 22px rgba(255,45,61,.25)}
+.lg{display:flex;align-items:center;gap:18px;padding:14px 18px;border-radius:14px;margin-bottom:12px;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);transition:.3s}
+.lg:hover{border-color:var(--red);transform:translateX(6px)}
+.lg .f{font-size:1.9rem}
+.lg b{display:block;font-family:'Rajdhani';font-size:1.25rem;letter-spacing:2px;color:#fff;line-height:1.1}
+.lg small{color:var(--red-soft);letter-spacing:1px;font-size:.82rem}
+
+/* CONTACT */
+.ct{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.list{display:grid;gap:10px;align-content:start}
+.list a,.list div{
+  display:block;padding:13px 18px;border-radius:12px;color:#dfe3f7;text-decoration:none;font-size:.95rem;
+  background:var(--glass);border:1px solid var(--glass-b);transition:.3s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.list a:hover{border-color:var(--red);background:rgba(255,45,61,.08);transform:translateX(6px)}
+.quote{margin-top:22px;padding:22px 24px;border-left:3px solid var(--red);background:linear-gradient(90deg,rgba(255,45,61,.1),transparent);font-family:'Rajdhani';font-size:1.3rem;letter-spacing:1.5px;color:#fff;font-weight:600}
+form{padding:34px 32px;display:grid;gap:16px;align-content:start}
+form input,form textarea{
+  width:100%;font-family:'Space Grotesk';font-size:1rem;color:#fff;padding:14px 16px;border-radius:12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--glass-b);outline:none;transition:.25s;
+}
+form input::placeholder,form textarea::placeholder{color:#6b7194}
+form input:focus,form textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,45,61,.18)}
+form textarea{min-height:140px;resize:vertical}
+form button{border:0;cursor:pointer;font-family:'Rajdhani';font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:1rem;padding:15px;border-radius:999px;color:#fff;background:linear-gradient(135deg,#ff2d3d,#b3000f);box-shadow:0 8px 30px rgba(255,45,61,.4);transition:.3s}
+form button:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(255,45,61,.6)}
+
+footer{margin-top:90px;padding:50px 6% 40px;text-align:center;border-top:1px solid var(--glass-b);position:relative}
+footer::before{content:"";position:absolute;top:-1px;left:25%;right:25%;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);box-shadow:0 0 20px var(--red)}
+footer .big{font-family:'Rajdhani';font-weight:700;font-size:2.4rem;letter-spacing:8px;color:#fff}
+footer p{color:var(--mute);font-size:.88rem;margin:8px 0 20px}
+footer .lk{display:flex;gap:26px;justify-content:center;flex-wrap:wrap}
+footer .lk a{font-family:'Rajdhani';letter-spacing:3px;text-transform:uppercase;font-weight:600;color:var(--mute);text-decoration:none;font-size:.85rem}
+footer .lk a:hover{color:var(--red-soft)}
+
+#lb{position:fixed;inset:0;background:rgba(2,3,8,.94);backdrop-filter:blur(8px);display:none;z-index:500;align-items:center;justify-content:center;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:90vw;max-height:88vh;border-radius:14px;border:1px solid var(--glass-b);box-shadow:0 0 80px rgba(255,45,61,.3)}
+
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s,transform .8s}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:920px){
+  .hero{grid-template-columns:1fr;gap:56px}
+  .photo{margin:0 auto}
+  .sk,.ct{grid-template-columns:1fr}
+  nav ul{display:none;position:absolute;top:62px;left:0;right:0;flex-direction:column;background:rgba(10,12,24,.95);border:1px solid var(--glass-b);border-radius:20px;padding:10px}
+  nav ul.open{display:flex}
+  .burger{display:block}
+  nav{gap:4px}
+}
+</style>
 </head>
 <body>
+<canvas id="bg"></canvas>
+<div class="glow a"></div><div class="glow b"></div>
+<div id="prog"></div>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <div class="nav-logo">AT</div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#academic">Academic</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <span></span><span></span><span></span>
-    </div>
-  </nav>
+<nav>
+  <a class="mark" href="#home">AT</a>
+  <ul id="menu">
+    <li><a href="#home" data-s="home">Home</a></li>
+    <li><a href="#academic" data-s="academic">Academic</a></li>
+    <li><a href="#projects" data-s="projects">Projects</a></li>
+    <li><a href="#skills" data-s="skills">Skills</a></li>
+    <li><a href="#contact" data-s="contact">Contact</a></li>
+  </ul>
+  <button class="burger" id="burger" aria-label="Menu">☰</button>
+</nav>
 
-  <!-- HOME -->
-  <section id="home">
-    <div class="hero-bg-text">ARYAN</div>
-    <div class="hero-content">
-      <div class="hero-photos">
-        <div class="photo-strip">
-          <img src="aryan 1.jpeg.jpeg" alt="Aryan 1" class="hero-img active" id="heroImg"/>
-        </div>
-        <div class="photo-thumbs">
-          <img src="aryan 1.jpeg.jpeg" alt="" class="thumb active" onclick="switchHero(this, 'aryan 1.jpeg.jpeg')"/>
-          <img src="aryan 2.jpeg.jfif" alt="" class="thumb" onclick="switchHero(this, 'aryan 2.jpeg.jfif')"/>
-          <img src="aryan3.jpeg.jpeg" alt="" class="thumb" onclick="switchHero(this, 'aryan3.jpeg.jpeg')"/>
-          <img src="aryan4.jpeg.jpeg" alt="" class="thumb" onclick="switchHero(this, 'aryan4.jpeg.jpeg')"/>
-          <img src="aryan5.jpeg.jpeg" alt="" class="thumb" onclick="switchHero(this, 'aryan5.jpeg.jpeg')"/>
-        </div>
+<!-- HOME -->
+<section id="home">
+  <div class="hero">
+    <div class="photo rv">
+      <div class="ring"></div><div class="ring r2"></div>
+      <div class="frame">
+        <span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+        <img id="mainPhoto" src="aryan%201.jpeg.jpeg" alt="Aryan Thakur">
+        <div class="hud"><i></i>Spider-sense: active</div>
       </div>
-      <div class="hero-text">
-        <div class="hero-tag">Full Stack Developer</div>
-        <h1 class="hero-name">ARYAN<br/><span>THAKUR</span></h1>
-        <p class="hero-bio">
-          Pursuing <strong>MS in Computer Science</strong> at Woolf University (2027) &amp; Full Stack Specialization at <strong>Scaler</strong>. Building scalable systems, one commit at a time.
-        </p>
-        <div class="hero-langs">
-          <span>🇬🇧 EN</span>
-          <span>🇮🇳 HI</span>
-          <span>🇩🇪 DE</span>
-          <span>🇪🇸 ES</span>
-        </div>
-        <div class="hero-btns">
-          <a href="MY_RESUME.pdf" download class="btn-primary">Download Resume</a>
-          <a href="#contact" class="btn-outline">Get In Touch</a>
-        </div>
-        <div class="hero-links">
-          <a href="https://www.linkedin.com/in/aryan-thakur-141641370/" target="_blank" class="social-link">LinkedIn</a>
-          <a href="https://github.com/aryanthakurat366-max" target="_blank" class="social-link">GitHub</a>
-          <a href="https://www.scaler.com/academy/profile/e57c8d46c05f/" target="_blank" class="social-link">Scaler</a>
-          <a href="https://www.instagram.com/thakur_since2002?igsh=MW5scTBiczlpNTMyMA==" target="_blank" class="social-link">Instagram</a>
-          <a href="https://wa.me/917206125860" target="_blank" class="social-link">WhatsApp</a>
-          <a href="https://www.duolingo.com/profile/aryanThakur191" target="_blank" class="social-link">Duolingo</a>
-          <a href="https://woolf.university/id/4295158701?token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjExM2E2LWE4NDYtNGE5My05YWIwLWYwZWM2ZDNhYTZmNyIsImlzcyI6InVybjpXb29sZlVuaXZlcnNpdHk6c2VydmVyL3NlcnZpY2UvYWNjZXNzIiwiaXNWZXJpZmllZCI6dHJ1ZSwia2luZCI6Im9hdXRoIiwib3JnIjp7Imdyb3VwcyI6W10sImlkIjoiOWIxN2Y1Y2UtMTA3OC00ZmRmLWFlYzAtMDJiZjRlY2ZiMGE2In0sInNjb3BlIjoiKiJ9.BlwMrBXTsOjW0rTTQjGGYZSG93Oz8ZvimQbFPmeZWX4" target="_blank" class="social-link">Woolf ID</a>
-        </div>
+      <div class="thumbs" id="thumbs">
+        <img class="on" src="aryan%201.jpeg.jpeg" alt="Aryan 1">
+        <img src="aryan%202.jpeg.jfif" alt="Aryan 2">
+        <img src="aryan3.jpeg.jpeg" alt="Aryan 3">
+        <img src="aryan4.jpeg.jpeg" alt="Aryan 4">
+        <img src="aryan5.jpeg.jpeg" alt="Aryan 5">
       </div>
     </div>
-    <div class="scroll-hint">SCROLL DOWN ↓</div>
-  </section>
-
-  <!-- ACADEMIC -->
-  <section id="academic">
-    <div class="section-header">
-      <span class="section-num">01</span>
-      <h2>Academic <span class="red">Journey</span></h2>
-      <p>Certifications, milestones &amp; achievements from Scaler &amp; Woolf University</p>
-    </div>
-
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <h3>MS Computer Science</h3>
-          <p>Woolf University — Expected Jan 2027</p>
-        </div>
+    <div class="rv">
+      <span class="eyebrow">Full Stack Developer</span>
+      <h1><span class="l1">Aryan</span><span class="l2">Thakur</span></h1>
+      <div class="role"><span>&gt;</span> <span id="typed" style="color:#fff"></span><span class="cursor"></span></div>
+      <p class="bio">Pursuing <b>MS in Computer Science</b> at Woolf University (2027) &amp; Full Stack Specialization at <b>Scaler</b>. Building scalable systems, one commit at a time.</p>
+      <div class="chips"><span>🇬🇧 EN</span><span>🇮🇳 HI</span><span>🇩🇪 DE</span><span>🇪🇸 ES</span></div>
+      <div class="btns">
+        <a class="btn p" href="MY_RESUME.pdf">Download Resume</a>
+        <a class="btn g" href="#contact">Get In Touch</a>
       </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <h3>Full Stack Specialization</h3>
-          <p>Scaler — Ongoing | Top 1% Performer</p>
-        </div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <h3>Full-Stack LLD and Development 1</h3>
-          <p>Scaler Academy — Certificate of Excellence (Feb 2026)</p>
-        </div>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/aryan-thakur-141641370/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/aryanthakurat366-max" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.scaler.com/academy/profile/e57c8d46c05f/" target="_blank" rel="noopener">Scaler</a>
+        <a href="https://www.instagram.com/thakur_since2002?igsh=MW5scTBiczlpNTMyMA==" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://wa.me/917206125860" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.duolingo.com/profile/aryanThakur191" target="_blank" rel="noopener">Duolingo</a>
+        <a href="https://woolf.university/id/4295158701?token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjExM2E2LWE4NDYtNGE5My05YWIwLWYwZWM2ZDNhYTZmNyIsImlzcyI6InVybjpXb29sZlVuaXZlcnNpdHk6c2VydmVyL3NlcnZpY2UvYWNjZXNzIiwiaXNWZXJpZmllZCI6dHJ1ZSwia2luZCI6Im9hdXRoIiwib3JnIjp7Imdyb3VwcyI6W10sImlkIjoiOWIxN2Y1Y2UtMTA3OC00ZmRmLWFlYzAtMDJiZjRlY2ZiMGE2In0sInNjb3BlIjoiKiJ9.BlwMrBXTsOjW0rTTQjGGYZSG93Oz8ZvimQbFPmeZWX4" target="_blank" rel="noopener">Woolf ID</a>
       </div>
     </div>
+  </div>
+  <div class="swing">SCROLL</div>
+</section>
 
-    <div class="academic-grid">
-      <div class="acad-card">
-        <img src="1 Year passed.jpeg.png" alt="1 Year at Scaler"/>
-        <div class="acad-label">1 Year at Scaler</div>
-      </div>
-      <div class="acad-card">
-        <img src="9 months passed.jpeg.png" alt="9 Months"/>
-        <div class="acad-label">9 Months Milestone</div>
-      </div>
-      <div class="acad-card">
-        <img src="6 Months passed.jpeg.png" alt="6 Months"/>
-        <div class="acad-label">6 Months Milestone</div>
-      </div>
-      <div class="acad-card">
-        <img src="3 Months passed.jpeg.png" alt="3 Months"/>
-        <div class="acad-label">3 Months Milestone</div>
-      </div>
-      <div class="acad-card">
-        <img src="TOP1.png" alt="Top 1%"/>
-        <div class="acad-label">Top 1% at Scaler</div>
-      </div>
-      <div class="acad-card">
-        <img src="id-card.jpeg.jpeg" alt="ID Card"/>
-        <div class="acad-label">Student ID</div>
-      </div>
-      <div class="acad-card wide">
-        <img src="percentage.jpeg.jpeg" alt="Score"/>
-        <div class="acad-label">Academic Score</div>
-      </div>
+<!-- ACADEMIC -->
+<section id="academic"><div class="wrap">
+  <div class="head rv"><span class="no">01</span><h2>Academic Journey</h2><p>Certifications, milestones &amp; achievements from Scaler &amp; Woolf University</p></div>
+  <div class="acad rv">
+    <div class="card"><div class="k">DEGREE</div><h3>MS Computer Science</h3><p>Woolf University — Expected Jan 2027</p></div>
+    <div class="card"><div class="k">SPECIALIZATION</div><h3>Full Stack Specialization</h3><p>Scaler — Ongoing | Top 1% Performer</p></div>
+    <div class="card"><div class="k">CERTIFICATE</div><h3>Full-Stack LLD and Development 1</h3><p>Scaler Academy — Certificate of Excellence (Feb 2026)</p></div>
+  </div>
+  <div class="gal rv">
+    <figure><img src="1%20Year%20passed.jpeg.png" alt="1 Year at Scaler"><figcaption>1 Year at Scaler</figcaption></figure>
+    <figure><img src="9%20months%20passed.jpeg.png" alt="9 Months"><figcaption>9 Months Milestone</figcaption></figure>
+    <figure><img src="6%20Months%20passed.jpeg.png" alt="6 Months"><figcaption>6 Months Milestone</figcaption></figure>
+    <figure><img src="3%20Months%20passed.jpeg.png" alt="3 Months"><figcaption>3 Months Milestone</figcaption></figure>
+    <figure><img src="TOP1.png" alt="Top 1%"><figcaption>Top 1% at Scaler</figcaption></figure>
+    <figure><img src="id-card.jpeg.jpeg" alt="ID Card"><figcaption>Student ID</figcaption></figure>
+    <figure><img src="percentage.jpeg.jpeg" alt="Score"><figcaption>Academic Score</figcaption></figure>
+  </div>
+</div></section>
+
+<!-- PROJECTS -->
+<section id="projects"><div class="wrap">
+  <div class="head rv"><span class="no">02</span><h2>My Projects</h2><p>Things I've built while learning the craft</p></div>
+  <div class="projs">
+    <article class="card proj rv"><span class="n">01</span><div class="ic">🧮</div><h3>Calculator</h3><p>A fully functional calculator built with HTML, CSS &amp; JavaScript. Clean UI with keyboard support.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><a class="go" href="calculator.html">View Project <span>→</span></a></article>
+    <article class="card proj rv"><span class="n">02</span><div class="ic">💱</div><h3>Currency Converter</h3><p>Real-time currency converter using exchange rate APIs. Supports multiple currencies with live rates.</p><div class="tags"><span>HTML</span><span>CSS</span><span>API</span></div><a class="go" href="currency-convertor.html">View Project <span>→</span></a></article>
+    <article class="card proj rv"><span class="n">03</span><div class="ic">🚗</div><h3>My Garage</h3><p>A showcase web app for my personal garage — featuring bikes &amp; cars with a dynamic gallery layout.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JS</span></div><a class="go" href="my-garage.html">View Project <span>→</span></a></article>
+    <article class="card proj rv"><span class="n">04</span><div class="ic">🌤️</div><h3>Weather App</h3><p>Live weather app with real-time data using WeatherAPI. Search any city, see temperature, humidity, wind speed &amp; more. Includes search history.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JS</span><span>API</span></div><a class="go" href="weather-app.html">View Project <span>→</span></a></article>
+    <article class="card proj rv"><span class="n">05</span><div class="ic">🎬</div><h3>CineTrack — IMDb Clone</h3><p>A React-based movie tracking app with watchlist, genre filters, rating sort, search &amp; AI-powered movie recommendations using Gemini API.</p><div class="tags"><span>React</span><span>Tailwind</span><span>TMDB API</span><span>Gemini AI</span></div><a class="go" href="https://cinemafans.vercel.app" target="_blank" rel="noopener">View Project <span>→</span></a></article>
+    <article class="card proj rv"><span class="n">06</span><div class="ic">🎟️</div><h3>BookMyShow — Movie Ticket Booking</h3><p>A full-stack MERN movie ticket booking platform with role-based access (User, Partner, Admin), live seat selection, Razorpay payment integration &amp; theatre/show management. Note: backend is on a free server, so it may take ~30s to wake up on first load.</p><div class="tags"><span>React</span><span>Node.js</span><span>Express</span><span>MongoDB</span><span>Razorpay</span></div><a class="go" href="https://book-my-show-seven-lyart.vercel.app/login" target="_blank" rel="noopener">View Project <span>→</span></a></article>
+  </div>
+</div></section>
+
+<!-- SKILLS -->
+<section id="skills"><div class="wrap">
+  <div class="head rv"><span class="no">03</span><h2>My Skills</h2><p>Technologies I work with &amp; languages I speak</p></div>
+  <div class="sk">
+    <div class="card rv">
+      <h3>// Coding Languages</h3>
+      <div class="bar"><div class="bt"><span>Java + DSA</span><b>86%</b></div><div class="track"><div class="fill" data-w="86"></div></div></div>
+      <div class="bar"><div class="bt"><span>JavaScript</span><b>100%</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+      <div class="bar"><div class="bt"><span>HTML5 &amp; CSS3</span><b>89%</b></div><div class="track"><div class="fill" data-w="89"></div></div></div>
+      <div class="bar"><div class="bt"><span>SQL</span><b>100%</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+      <div class="bar"><div class="bt"><span>Python</span><b>70%</b></div><div class="track"><div class="fill" data-w="70"></div></div></div>
+      <div class="bar"><div class="bt"><span>React &amp; Node.js</span><b>80%</b></div><div class="track"><div class="fill" data-w="80"></div></div></div>
+      <div class="bar"><div class="bt"><span>MongoDB &amp; Express</span><b>75%</b></div><div class="track"><div class="fill" data-w="75"></div></div></div>
+      <div class="cert">LLD — Low Level Design Certified</div>
     </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="section-header">
-      <span class="section-num">02</span>
-      <h2>My <span class="red">Projects</span></h2>
-      <p>Things I've built while learning the craft</p>
+    <div class="card rv">
+      <h3>// Spoken Languages</h3>
+      <div class="lg"><span class="f">🇬🇧</span><div><b>English</b><small>Fluent</small></div></div>
+      <div class="lg"><span class="f">🇮🇳</span><div><b>Hindi</b><small>Native</small></div></div>
+      <div class="lg"><span class="f">🇩🇪</span><div><b>German</b><small>Conversational</small></div></div>
+      <div class="lg"><span class="f">🇪🇸</span><div><b>Spanish</b><small>Conversational</small></div></div>
     </div>
+  </div>
+</div></section>
 
-    <div class="projects-grid">
-      <div class="project-card">
-        <div class="project-num">01</div>
-        <div class="project-icon">🧮</div>
-        <h3>Calculator</h3>
-        <p>A fully functional calculator built with HTML, CSS &amp; JavaScript. Clean UI with keyboard support.</p>
-        <div class="project-tags">
-          <span>HTML</span><span>CSS</span><span>JavaScript</span>
-        </div>
-        <a href="calculator.html" target="_blank" class="project-link">View Project →</a>
+<!-- CONTACT -->
+<section id="contact"><div class="wrap">
+  <div class="head rv"><span class="no">04</span><h2>Get In Touch</h2><p>Have a project in mind? Let's talk.</p></div>
+  <div class="ct">
+    <div class="rv">
+      <div class="list">
+        <div>✉ aryanthakurat366@gmail.com</div>
+        <a href="https://www.linkedin.com/in/aryan-thakur-141641370/" target="_blank" rel="noopener">💼 LinkedIn — Aryan Thakur</a>
+        <a href="https://wa.me/917206125860" target="_blank" rel="noopener">📱 WhatsApp — +91 72061 25860</a>
+        <a href="https://www.instagram.com/thakur_since2002?igsh=MW5scTBiczlpNTMyMA==" target="_blank" rel="noopener">📸 Instagram — @thakur_since2002</a>
+        <a href="https://github.com/aryanthakurat366-max" target="_blank" rel="noopener">🐙 GitHub — aryanthakurat366-max</a>
+        <a href="https://discord.com/users/aryanthakur0911" target="_blank" rel="noopener">🎮 Discord — aryanthakur0911</a>
+        <a href="https://www.scaler.com/academy/profile/e57c8d46c05f/" target="_blank" rel="noopener">🎓 Scaler Profile</a>
+        <a href="https://www.duolingo.com/profile/aryanThakur191" target="_blank" rel="noopener">🦉 Duolingo — aryanThakur191</a>
+        <a href="https://woolf.university/id/4295158701?token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjExM2E2LWE4NDYtNGE5My05YWIwLWYwZWM2ZDNhYTZmNyIsImlzcyI6InVybjpXb29sZlVuaXZlcnNpdHk6c2VydmVyL3NlcnZpY2UvYWNjZXNzIiwiaXNWZXJpZmllZCI6dHJ1ZSwia2luZCI6Im9hdXRoIiwib3JnIjp7Imdyb3VwcyI6W10sImlkIjoiOWIxN2Y1Y2UtMTA3OC00ZmRmLWFlYzAtMDJiZjRlY2ZiMGE2In0sInNjb3BlIjoiKiJ9.BlwMrBXTsOjW0rTTQjGGYZSG93Oz8ZvimQbFPmeZWX4" target="_blank" rel="noopener">🎓 Woolf University ID</a>
       </div>
-
-      <div class="project-card featured">
-        <div class="project-num">02</div>
-        <div class="project-icon">💱</div>
-        <h3>Currency Converter</h3>
-        <p>Real-time currency converter using exchange rate APIs. Supports multiple currencies with live rates.</p>
-        <div class="project-tags">
-          <span>HTML</span><span>CSS</span><span>API</span>
-        </div>
-        <a href="currency-convertor.html" target="_blank" class="project-link">View Project →</a>
-      </div>
-
-      <div class="project-card">
-        <div class="project-num">03</div>
-        <div class="project-icon">🚗</div>
-        <h3>My Garage</h3>
-        <p>A showcase web app for my personal garage — featuring bikes &amp; cars with a dynamic gallery layout.</p>
-        <div class="project-tags">
-          <span>HTML</span><span>CSS</span><span>JS</span>
-        </div>
-        <a href="my-garage.html" target="_blank" class="project-link">View Project →</a>
-      </div>
-
-      <div class="project-card">
-        <div class="project-num">04</div>
-        <div class="project-icon">🌤️</div>
-        <h3>Weather App</h3>
-        <p>Live weather app with real-time data using WeatherAPI. Search any city, see temperature, humidity, wind speed &amp; more. Includes search history.</p>
-        <div class="project-tags">
-          <span>HTML</span><span>CSS</span><span>JS</span><span>API</span>
-        </div>
-        <a href="weather-app.html" target="_blank" class="project-link">View Project →</a>
-      </div>
-
-      <!-- ✅ CineTrack - Updated URL -->
-      <div class="project-card featured">
-        <div class="project-num">05</div>
-        <div class="project-icon">🎬</div>
-        <h3>CineTrack — IMDb Clone</h3>
-        <p>A React-based movie tracking app with watchlist, genre filters, rating sort, search &amp; AI-powered movie recommendations using Gemini API.</p>
-        <div class="project-tags">
-          <span>React</span><span>Tailwind</span><span>TMDB API</span><span>Gemini AI</span>
-        </div>
-        <a href="https://cinemafans.vercel.app" target="_blank" class="project-link">View Project →</a>
-      </div>
-
-      <!-- ✅ BookMyShow - Full Stack MERN -->
-      <div class="project-card featured">
-        <div class="project-num">06</div>
-        <div class="project-icon">🎟️</div>
-        <h3>BookMyShow — Movie Ticket Booking</h3>
-        <p>A full-stack MERN movie ticket booking platform with role-based access (User, Partner, Admin), live seat selection, Razorpay payment integration &amp; theatre/show management. Note: backend is on a free server, so it may take ~30s to wake up on first load.</p>
-        <div class="project-tags">
-          <span>React</span><span>Node.js</span><span>Express</span><span>MongoDB</span><span>Razorpay</span>
-        </div>
-        <a href="https://book-my-show-seven-lyart.vercel.app/login" target="_blank" class="project-link">View Project →</a>
-      </div>
-
+      <div class="quote">"Code is poetry written<br>in the language of machines."</div>
     </div>
-  </section>
+    <form class="card rv" id="cform">
+      <input type="text" id="fn" placeholder="Your Name" required>
+      <input type="email" id="fe" placeholder="Email Address" required>
+      <input type="text" id="fs" placeholder="Subject" required>
+      <textarea id="fm" placeholder="Message" required></textarea>
+      <button type="submit">Send Message ↗</button>
+    </form>
+  </div>
+</div></section>
 
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="section-header">
-      <span class="section-num">03</span>
-      <h2>My <span class="red">Skills</span></h2>
-      <p>Technologies I work with &amp; languages I speak</p>
-    </div>
+<footer>
+  <div class="big">ARYAN THAKUR</div>
+  <p>© 2026 Aryan Thakur. Built with HTML, CSS &amp; passion.</p>
+  <div class="lk"><a href="#home">Home</a><a href="#academic">Academic</a><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#contact">Contact</a></div>
+</footer>
 
-    <div class="skills-wrapper">
-      <div class="skills-col">
-        <h3 class="skills-col-title"><span class="red">//</span> Coding Languages</h3>
-        <div class="skill-item">
-          <div class="skill-header"><span>Java + DSA</span><span>86%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:86%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>JavaScript</span><span>100%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:100%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>HTML5 &amp; CSS3</span><span>89%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:89%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>SQL</span><span>100%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:100%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>Python</span><span>70%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>React &amp; Node.js</span><span>80%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-header"><span>MongoDB &amp; Express</span><span>75%</span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
-        </div>
-        <div class="skill-item learning">
-          <div class="skill-header"><span>LLD — Low Level Design <span class="badge">Certified</span></span></div>
-          <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
-        </div>
-      </div>
+<div id="lb"><img alt=""></div>
 
-      <div class="skills-divider"></div>
+<script>
+/* ---------- interactive web background ---------- */
+const cv=document.getElementById('bg'),c=cv.getContext('2d');
+let W,H,mx=.5,my=.35,tx=.5,ty=.35;
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+size();addEventListener('resize',size);
+addEventListener('mousemove',e=>{tx=e.clientX/W;ty=e.clientY/H});
+function web(cx,cy,R,spokes,rings,alpha,rot){
+  c.lineWidth=1;
+  for(let i=0;i<spokes;i++){
+    const a=rot+i/spokes*Math.PI*2;
+    c.strokeStyle=`rgba(255,255,255,${alpha})`;
+    c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);c.stroke();
+  }
+  for(let r=1;r<=rings;r++){
+    const rr=R*r/rings;
+    c.strokeStyle=`rgba(255,255,255,${alpha*.9})`;
+    c.beginPath();
+    for(let i=0;i<=spokes;i++){
+      const a=rot+i/spokes*Math.PI*2, a2=rot+(i+.5)/spokes*Math.PI*2;
+      const x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;
+      const mxp=cx+Math.cos(a2)*rr*.92,myp=cy+Math.sin(a2)*rr*.92;
+      if(i===0)c.moveTo(x,y);else c.quadraticCurveTo(mxp,myp,x,y);
+    }
+    c.stroke();
+  }
+}
+let t=0;
+(function loop(){
+  t+=.0006;
+  mx+=(tx-mx)*.04;my+=(ty-my)*.04;
+  c.clearRect(0,0,W,H);
+  const g=c.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,Math.max(W,H)*.8);
+  g.addColorStop(0,'#0b0f22');g.addColorStop(1,'#04050b');
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  const px=(mx-.5)*60,py=(my-.5)*40;
+  web(W*.08+px,H*.05+py,Math.max(W,H)*.55,12,11,.055,t);
+  web(W*.95-px,H*.98-py,Math.max(W,H)*.5,12,10,.045,-t+1);
+  // soft red pulse that follows cursor
+  const m=c.createRadialGradient(mx*W,my*H,0,mx*W,my*H,260);
+  m.addColorStop(0,'rgba(255,45,61,.13)');m.addColorStop(1,'rgba(255,45,61,0)');
+  c.fillStyle=m;c.fillRect(0,0,W,H);
+  requestAnimationFrame(loop);
+})();
 
-      <div class="skills-col">
-        <h3 class="skills-col-title"><span class="red">//</span> Spoken Languages</h3>
-        <div class="lang-cards">
-          <div class="lang-card">
-            <div class="lang-flag">🇬🇧</div>
-            <div class="lang-name">English</div>
-            <div class="lang-level">Fluent</div>
-          </div>
-          <div class="lang-card">
-            <div class="lang-flag">🇮🇳</div>
-            <div class="lang-name">Hindi</div>
-            <div class="lang-level">Native</div>
-          </div>
-          <div class="lang-card">
-            <div class="lang-flag">🇩🇪</div>
-            <div class="lang-name">German</div>
-            <div class="lang-level">Conversational</div>
-          </div>
-          <div class="lang-card">
-            <div class="lang-flag">🇪🇸</div>
-            <div class="lang-name">Spanish</div>
-            <div class="lang-level">Conversational</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+/* ---------- ui ---------- */
+const menu=document.getElementById('menu');
+document.getElementById('burger').onclick=()=>menu.classList.toggle('open');
+menu.querySelectorAll('a').forEach(a=>a.onclick=()=>menu.classList.remove('open'));
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="section-header">
-      <span class="section-num">04</span>
-      <h2>Get In <span class="red">Touch</span></h2>
-      <p>Have a project in mind? Let's talk.</p>
-    </div>
+const main=document.getElementById('mainPhoto');
+document.querySelectorAll('#thumbs img').forEach(t=>t.onclick=()=>{
+  main.style.opacity=0;
+  setTimeout(()=>{main.src=t.src;main.style.opacity=1},200);
+  document.querySelectorAll('#thumbs img').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+});
 
-    <div class="contact-wrapper">
-      <div class="contact-info">
-        <div class="contact-line">
-          <span class="contact-icon">✉</span>
-          <a href="mailto:aryanthakurat366@gmail.com">aryanthakurat366@gmail.com</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">💼</span>
-          <a href="https://www.linkedin.com/in/aryan-thakur-141641370/" target="_blank">LinkedIn — Aryan Thakur</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">📱</span>
-          <a href="https://wa.me/917206125860" target="_blank">WhatsApp — +91 72061 25860</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">📸</span>
-          <a href="https://www.instagram.com/thakur_since2002?igsh=MW5scTBiczlpNTMyMA==" target="_blank">Instagram — @thakur_since2002</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">🐙</span>
-          <a href="https://github.com/aryanthakurat366-max" target="_blank">GitHub — aryanthakurat366-max</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">🎮</span>
-          <a href="https://discord.com/users/aryanthakur0911" target="_blank">Discord — aryanthakur0911</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">🎓</span>
-          <a href="https://www.scaler.com/academy/profile/e57c8d46c05f/" target="_blank">Scaler Profile</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">🦉</span>
-          <a href="https://www.duolingo.com/profile/aryanThakur191" target="_blank">Duolingo — aryanThakur191</a>
-        </div>
-        <div class="contact-line">
-          <span class="contact-icon">🎓</span>
-          <a href="https://woolf.university/id/4295158701?token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjExM2E2LWE4NDYtNGE5My05YWIwLWYwZWM2ZDNhYTZmNyIsImlzcyI6InVybjpXb29sZlVuaXZlcnNpdHk6c2VydmVyL3NlcnZpY2UvYWNjZXNzIiwiaXNWZXJpZmllZCI6dHJ1ZSwia2luZCI6Im9hdXRoIiwib3JnIjp7Imdyb3VwcyI6W10sImlkIjoiOWIxN2Y1Y2UtMTA3OC00ZmRmLWFlYzAtMDJiZjRlY2ZiMGE2In0sInNjb3BlIjoiKiJ9.BlwMrBXTsOjW0rTTQjGGYZSG93Oz8ZvimQbFPmeZWX4" target="_blank">Woolf University ID</a>
-        </div>
-        <div class="contact-quote">
-          "Code is poetry written<br/>in the language of machines."
-        </div>
-      </div>
+/* typed role */
+const roles=['Full Stack Developer','Your Friendly Neighborhood Coder','MERN Stack Builder','Bug Swinger','Problem Solver'];
+let ri=0,ci=0,del=false;const el=document.getElementById('typed');
+(function type(){
+  const w=roles[ri];
+  el.textContent=w.slice(0,ci);
+  if(!del&&ci===w.length){del=true;return setTimeout(type,1600)}
+  if(del&&ci===0){del=false;ri=(ri+1)%roles.length}
+  ci+=del?-1:1;setTimeout(type,del?35:75);
+})();
 
-      <form class="contact-form" action="https://formspree.io/f/xlgwryje" method="POST">
-        <div class="form-group">
-          <label for="name">Your Name</label>
-          <input type="text" id="name" name="name" placeholder="John Doe" required/>
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="john@example.com" required/>
-        </div>
-        <div class="form-group">
-          <label for="subject">Subject</label>
-          <input type="text" id="subject" name="subject" placeholder="Project collaboration..."/>
-        </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
-        </div>
-        <button type="submit" class="btn-primary full-width">Send Message ↗</button>
-      </form>
-    </div>
-  </section>
+/* reveal + bars */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%')}
+}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(x=>io.observe(x));
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo">ARYAN THAKUR</div>
-    <p>© 2026 Aryan Thakur. Built with HTML, CSS &amp; passion.</p>
-    <div class="footer-links">
-      <a href="#home">Home</a>
-      <a href="#academic">Academic</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </footer>
+/* card mouse glow */
+document.querySelectorAll('.card').forEach(cd=>cd.addEventListener('mousemove',e=>{
+  const r=cd.getBoundingClientRect();
+  cd.style.setProperty('--mx',(e.clientX-r.left)+'px');cd.style.setProperty('--my',(e.clientY-r.top)+'px');
+}));
 
-  <script src="script.js"></script>
+/* scroll progress + active nav */
+const prog=document.getElementById('prog'),links=[...menu.querySelectorAll('a')];
+const secs=links.map(a=>document.getElementById(a.dataset.s));
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  let cur=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.4)cur=i});
+  links.forEach((a,i)=>a.classList.toggle('act',i===cur));
+});
+
+/* lightbox */
+const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+document.querySelectorAll('.gal img').forEach(i=>i.onclick=()=>{lbi.src=i.src;lb.classList.add('on')});
+lb.onclick=()=>lb.classList.remove('on');
+
+/* form -> mail client */
+document.getElementById('cform').addEventListener('submit',e=>{
+  e.preventDefault();
+  const s=encodeURIComponent(fs.value),b=encodeURIComponent(fm.value+'\n\n— '+fn.value+' ('+fe.value+')');
+  location.href='mailto:aryanthakurat366@gmail.com?subject='+s+'&body='+b;
+});
+</script>
 </body>
 </html>
