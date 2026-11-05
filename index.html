@@ -158,6 +158,26 @@ dl.facts dd { margin: 0; font-weight: 500; }
 .waves { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 150px; display: block; }
 footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 13px; text-align: center; order: 7; border-top: 1px solid var(--line); background: #060405; }
 
+/* INTRO */
+.intro { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; overflow: hidden; cursor: pointer;
+  background: radial-gradient(820px 560px at 50% 42%, #3a0f16, var(--bg) 72%);
+  animation: introSafety .01s 9s forwards; }
+@keyframes introSafety { to { visibility: hidden; pointer-events: none; } }
+.intro-in { display: flex; flex-direction: column; align-items: center; padding: 24px var(--gutter-r) 24px var(--gutter-l); max-width: 100%; }
+.intro-tag { margin: 0 0 14px; font-size: 12px; font-weight: 700; letter-spacing: .3em; color: var(--red); opacity: 0; }
+.intro-stage { position: relative; width: min(460px, 84vw, calc(60vh * .8)); }
+.intro-photo { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; border-radius: 6px; opacity: 0;
+  -webkit-mask-image: linear-gradient(#000 52%, transparent); mask-image: linear-gradient(#000 52%, transparent); }
+.intro-name { position: absolute; left: 50%; bottom: 10%; transform: translateX(-50%); width: max-content; max-width: 96vw; white-space: nowrap;
+  font-family: var(--font-display); letter-spacing: .02em; font-size: clamp(40px, 11vw, 132px); line-height: .9; text-shadow: 0 4px 30px rgba(0,0,0,.75); }
+.intro-name span { display: inline-block; opacity: 0; }
+.intro-name .out { color: transparent; -webkit-text-stroke: 2px var(--fg); text-shadow: none; margin-left: .22em; }
+.intro-bar { width: min(220px, 50vw); height: 3px; background: rgba(255,255,255,.14); margin: 20px auto 8px; border-radius: 2px; overflow: hidden; }
+.intro-bar i { display: block; height: 100%; width: 0; background: var(--red); }
+.intro-skip { font-size: 12px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+.intro.static .intro-tag, .intro.static .intro-photo, .intro.static .intro-name span { opacity: 1; }
+.intro.static .intro-bar i { width: 100%; }
+
 /* PICKER */
 .picker { position: fixed; inset: 0; z-index: 100; background: radial-gradient(900px 500px at 50% 0%, #2a0d12, var(--bg) 70%); display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top, 0px)) var(--gutter-r) 24px var(--gutter-l); overflow-y: auto; }
 .picker-in { text-align: center; width: 100%; max-width: 920px; }
@@ -243,7 +263,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
           <circle cx="300" cy="110" r="70" fill="#e11d2e" opacity=".25"/>
         </svg>
         <div class="mono" aria-hidden="true">AT</div>
-        <img src="profile.jpg" alt="Aryan Thakur" onerror="this.remove()">
+        <img src="aryan%202.jpeg.jfif" alt="Aryan Thakur" onerror="this.remove()">
         <figcaption>Full-stack developer</figcaption>
       </figure>
     </div>
@@ -327,6 +347,19 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
   </section>
 </main>
 <footer>Designed and built by Aryan Thakur. Inspired by streaming-service layouts; not affiliated with any streaming brand.</footer>
+
+<div class="intro" id="intro" role="presentation">
+  <div class="intro-in">
+    <p class="intro-tag">THE SERIES</p>
+    <div class="intro-stage">
+      <img class="intro-photo" id="introPhoto" src="aryan%202.jpeg.jfif" alt="">
+      <div class="intro-name"><span>ARYAN</span> <span class="out">THAKUR</span></div>
+    </div>
+    <div class="intro-bar" aria-hidden="true"><i></i></div>
+    <p class="intro-skip">Tap to skip</p>
+  </div>
+</div>
+<noscript><style>.intro{display:none}</style></noscript>
 
 <div class="picker" id="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" hidden>
   <div class="picker-in">
@@ -526,7 +559,26 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
   var saved = null; try { saved = sessionStorage.getItem("profile"); } catch (e) {}
   var start = PROFILES.filter(function (x) { return x.id === saved; })[0];
   applyProfile(start || PROFILES[0]);
-  if (start) { heroIn(); setupReveal(); } else { openPicker(); }
+  /* ---- intro: name + photo, then "Who's watching?" ---- */
+  var intro = $("#intro"), introDone = false;
+  $("#introPhoto").onerror = function () { this.remove(); };
+  function finishIntro() {
+    if (introDone) return; introDone = true;
+    function after() { intro.hidden = true; openPicker(); }
+    if (canAnim) M.animate(intro, { opacity: [1, 0] }, { duration: 0.5 }).finished.then(after, after); else after();
+  }
+  function runIntro() {
+    document.body.style.overflow = "hidden";
+    intro.addEventListener("click", finishIntro);
+    document.addEventListener("keydown", function (e) { if (!introDone && (e.key === "Enter" || e.key === " " || e.key === "Escape")) finishIntro(); });
+    if (!canAnim) { intro.classList.add("static"); setTimeout(finishIntro, 1400); return; }
+    M.animate($(".intro-tag"), { opacity: [0, 1] }, { duration: 0.6, delay: 0.9 });
+    M.animate($(".intro-photo"), { opacity: [0, 1], scale: [1.08, 1], filter: ["blur(18px)", "blur(0px)"] }, { duration: 1.5, ease: "easeOut" });
+    M.animate($$(".intro-name span"), { opacity: [0, 1], y: [44, 0] }, { duration: 0.8, delay: M.stagger(0.14, { startDelay: 0.55 }), ease: "easeOut" });
+    M.animate($(".intro-bar i"), { width: ["0%", "100%"] }, { duration: 2.7, ease: "easeInOut" });
+    setTimeout(finishIntro, 3000);
+  }
+  if (start) { intro.hidden = true; heroIn(); setupReveal(); } else { runIntro(); }
 })();
 </script>
 
