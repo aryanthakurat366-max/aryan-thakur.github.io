@@ -242,7 +242,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
           <li><span class="tag">M.Sc. CS</span></li>
           <li>Scaler Neovarsity</li>
           <li>GPA 3.7 / 4.0</li>
-          <li>9 Originals</li>
+          <li>10 Originals</li>
           <li>Java · React · Node.js</li>
         </ul>
         <p class="lede hero-in" id="lede">Software developer and M.Sc. Computer Science student. I build web apps end to end: React front ends, Node and Express back ends, MongoDB, and lately real-time and AI projects. Every project here was built solo.</p>
@@ -283,7 +283,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
       <div>
         <p>I'm a software developer finishing an M.Sc. in Computer Science at Scaler Neovarsity. I like building complete products, from the interface a person taps to the database behind it.</p>
         <p>My toolkit starts with Java and data structures and runs through JavaScript, React, Node.js, Express and MongoDB. I've worked through both low level and high level system design, and I keep my problem-solving sharp with a daily practice streak.</p>
-        <p>Nine projects so far, all built on my own: from a currency converter to video calls over WebRTC and a chat app for PDFs.</p>
+        <p>Ten projects so far, all built on my own: from a currency converter to video calls over WebRTC, a chat app for PDFs and a remote job board.</p>
       </div>
       <dl class="facts">
         <div><dt>Studying</dt><dd>M.Sc. Computer Science</dd></div>
@@ -306,7 +306,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
       <article class="moment"><div class="val" data-count="824" data-dec="0">824</div><h3>Problems solved</h3><p>On Scaler, in a mix of languages. As of Oct 2026.</p></article>
       <article class="moment"><div class="val" data-count="658" data-dec="0">658</div><h3>Day streak</h3><p>Practicing every day. As of Oct 2026.</p></article>
       <article class="moment"><div class="val" data-count="3.7" data-dec="1">3.7<small>/4</small></div><h3>GPA</h3><p>M.Sc. Computer Science.</p></article>
-      <article class="moment"><div class="val" data-count="9" data-dec="0">9</div><h3>Projects built solo</h3><p>Front end, back end and deployment.</p></article>
+      <article class="moment"><div class="val" data-count="10" data-dec="0">10</div><h3>Projects built solo</h3><p>Front end, back end and deployment.</p></article>
       <article class="moment"><div class="val text">LLD + HLD</div><h3>System design</h3><p>Both courses completed.</p></article>
     </div>
   </section>
@@ -323,7 +323,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
     <div class="sec-head">
       <p class="eyebrow">Seasons &amp; episodes</p>
       <h2>My Journey</h2>
-      <p class="sub">Nine projects across three seasons, from first web apps to real-time and AI.</p>
+      <p class="sub">Ten projects across three seasons, from first web apps to real-time and AI.</p>
     </div>
     <div class="tabs" role="tablist" aria-label="Seasons" id="tabs"></div>
     <p class="syn" id="syn"></p>
@@ -392,6 +392,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
     "The Legends Garage": "my-garage.html",
     "CineTrack": "https://cinemafans.vercel.app",
     "BookMyShow": "https://book-my-show-seven-lyart.vercel.app/login",
+    "Remote Job Board": "https://job-board-cyan-delta.vercel.app/",
     "CollabBoard": "https://realtime-hub-cuf2.onrender.com/collabboard/",
     "MeetUp": "https://realtime-hub-cuf2.onrender.com/meetup/",
     "DocChat": "https://docchat-evbf.onrender.com/"
@@ -408,7 +409,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
     story:   { title: "The Full Story", sub: "About me · education", a: "#5b2a86", b: "#1a0f2e", glyph: "01" },
     moments: { title: "Top Moments", sub: "5 highlights", a: "#b3131f", b: "#2a070b", glyph: "02" },
     skills:  { title: "My Skills", sub: "7 skill groups", a: "#0f6b8a", b: "#08202b", glyph: "03" },
-    journey: { title: "My Projects", sub: "9 originals · 3 seasons", a: "#c2410c", b: "#2b1005", glyph: "04" }
+    journey: { title: "My Projects", sub: "10 originals · 3 seasons", a: "#c2410c", b: "#2b1005", glyph: "04" }
   };
   var PROFILES = [
     { id: "main", name: "Aryan", glyph: "A", a: "#e11d2e", b: "#6b0b15", badge: "MAIN", hint: "The full series, in order", order: ["story", "moments", "skills", "journey"], primary: { label: "Play Intro", href: "#story" } },
@@ -418,7 +419,7 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
   ];
   var SKILLS = [
     ["Languages", ["Java", "Python", "JavaScript", "SQL"]],
-    ["Front end", ["React", "HTML5", "CSS3", "Tailwind"]],
+    ["Front end", ["React", "React Router", "HTML5", "CSS3", "Tailwind", "Vitest"]],
     ["Back end", ["Node.js", "Express"]],
     ["Databases", ["MongoDB", "SQL"]],
     ["CS fundamentals", ["Data structures & algorithms", "Low level design", "High level design"]],
@@ -435,10 +436,11 @@ footer { padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px)); color: v
         { t: "The Legends Garage", k: "Showcase site", d: "A showcase of my garage: bikes and cars in a dynamic gallery.", tags: ["HTML", "CSS", "JavaScript"] }
       ] },
     { id: "s2", label: "Season 2 · Full-stack", a: "#b3131f", b: "#2a070b",
-      syn: "Complete products with a front end, an API, a database and real payments.",
+      syn: "Complete products built around real APIs, databases and payments.",
       eps: [
         { t: "CineTrack", k: "Movie tracker", d: "Movie tracker with watchlist, genre filters, rating sort, search and Gemini AI recommendations.", tags: ["React", "Tailwind", "TMDB", "Gemini"] },
-        { t: "BookMyShow", k: "Ticket booking", d: "MERN ticket booking with user, partner and admin roles, live seat selection and Razorpay payments. First load can take about 30s.", tags: ["MongoDB", "Express", "React", "Node.js", "Razorpay"] }
+        { t: "BookMyShow", k: "Ticket booking", d: "MERN ticket booking with user, partner and admin roles, live seat selection and Razorpay payments. First load can take about 30s.", tags: ["MongoDB", "Express", "React", "Node.js", "Razorpay"] },
+        { t: "Remote Job Board", k: "Job board", d: "Browse live remote jobs from the Remotive API with search, filters and pagination. Filters live in the URL so links are shareable. Covered by 32 automated tests.", tags: ["React", "React Router", "Vite", "Vitest"] }
       ] },
     { id: "s3", label: "Season 3 · Real-time & AI", a: "#6d28d9", b: "#1a0d33",
       syn: "Apps that react instantly to other people, and one that reads your documents.",
